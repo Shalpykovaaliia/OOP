@@ -6,26 +6,24 @@
 package librarymanagementsystem.facade;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import librarymanagementsystem.models.Profile;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
+import librarymanagementsystem.models.Profile;
 import librarymanagementsystem.models.User;
 
 /**
  *
  * @author User
  */
-public class UserFacade implements Serializable {
+public class UserJpaController implements Serializable {
 
-    public UserFacade(EntityManagerFactory emf) {
+    public UserJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -35,23 +33,19 @@ public class UserFacade implements Serializable {
     }
 
     public void create(User user) {
-        if (user.getProfileCollection() == null) {
-            user.setProfileCollection(new ArrayList<Profile>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Profile> attachedProfileCollection = new ArrayList<Profile>();
-            for (Profile profileCollectionProfileToAttach : user.getProfileCollection()) {
-                profileCollectionProfileToAttach = em.getReference(profileCollectionProfileToAttach.getClass(), profileCollectionProfileToAttach.getProfileId());
-                attachedProfileCollection.add(profileCollectionProfileToAttach);
+            Profile profileId = user.getProfileId();
+            if (profileId != null) {
+                profileId = em.getReference(profileId.getClass(), profileId.getProfileId());
+                user.setProfileId(profileId);
             }
-            user.setProfileCollection(attachedProfileCollection);
             em.persist(user);
-            for (Profile profileCollectionProfile : user.getProfileCollection()) {
-                profileCollectionProfile.getUserCollection().add(user);
-                profileCollectionProfile = em.merge(profileCollectionProfile);
+            if (profileId != null) {
+                profileId.getUserList().add(user);
+                profileId = em.merge(profileId);
             }
             em.getTransaction().commit();
         } finally {
@@ -67,27 +61,20 @@ public class UserFacade implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             User persistentUser = em.find(User.class, user.getId());
-            Collection<Profile> profileCollectionOld = persistentUser.getProfileCollection();
-            Collection<Profile> profileCollectionNew = user.getProfileCollection();
-            Collection<Profile> attachedProfileCollectionNew = new ArrayList<Profile>();
-            for (Profile profileCollectionNewProfileToAttach : profileCollectionNew) {
-                profileCollectionNewProfileToAttach = em.getReference(profileCollectionNewProfileToAttach.getClass(), profileCollectionNewProfileToAttach.getProfileId());
-                attachedProfileCollectionNew.add(profileCollectionNewProfileToAttach);
+            Profile profileIdOld = persistentUser.getProfileId();
+            Profile profileIdNew = user.getProfileId();
+            if (profileIdNew != null) {
+                profileIdNew = em.getReference(profileIdNew.getClass(), profileIdNew.getProfileId());
+                user.setProfileId(profileIdNew);
             }
-            profileCollectionNew = attachedProfileCollectionNew;
-            user.setProfileCollection(profileCollectionNew);
             user = em.merge(user);
-            for (Profile profileCollectionOldProfile : profileCollectionOld) {
-                if (!profileCollectionNew.contains(profileCollectionOldProfile)) {
-                    profileCollectionOldProfile.getUserCollection().remove(user);
-                    profileCollectionOldProfile = em.merge(profileCollectionOldProfile);
-                }
+            if (profileIdOld != null && !profileIdOld.equals(profileIdNew)) {
+                profileIdOld.getUserList().remove(user);
+                profileIdOld = em.merge(profileIdOld);
             }
-            for (Profile profileCollectionNewProfile : profileCollectionNew) {
-                if (!profileCollectionOld.contains(profileCollectionNewProfile)) {
-                    profileCollectionNewProfile.getUserCollection().add(user);
-                    profileCollectionNewProfile = em.merge(profileCollectionNewProfile);
-                }
+            if (profileIdNew != null && !profileIdNew.equals(profileIdOld)) {
+                profileIdNew.getUserList().add(user);
+                profileIdNew = em.merge(profileIdNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -118,10 +105,10 @@ public class UserFacade implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The user with id " + id + " no longer exists.", enfe);
             }
-            Collection<Profile> profileCollection = user.getProfileCollection();
-            for (Profile profileCollectionProfile : profileCollection) {
-                profileCollectionProfile.getUserCollection().remove(user);
-                profileCollectionProfile = em.merge(profileCollectionProfile);
+            Profile profileId = user.getProfileId();
+            if (profileId != null) {
+                profileId.getUserList().remove(user);
+                profileId = em.merge(profileId);
             }
             em.remove(user);
             em.getTransaction().commit();
@@ -178,7 +165,4 @@ public class UserFacade implements Serializable {
         }
     }
     
-    public boolean exist() throws Exception{
-        throw new Exception("Not yet implemented");
-    }
 }

@@ -12,7 +12,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import librarymanagementsystem.models.Books;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,9 +22,9 @@ import librarymanagementsystem.models.Category;
  *
  * @author User
  */
-public class CategoryFacade implements Serializable {
+public class CategoryJpaController implements Serializable {
 
-    public CategoryFacade(EntityManagerFactory emf) {
+    public CategoryJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -35,23 +34,23 @@ public class CategoryFacade implements Serializable {
     }
 
     public void create(Category category) {
-        if (category.getBooksCollection() == null) {
-            category.setBooksCollection(new ArrayList<Books>());
+        if (category.getBooksList() == null) {
+            category.setBooksList(new ArrayList<Books>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Books> attachedBooksCollection = new ArrayList<Books>();
-            for (Books booksCollectionBooksToAttach : category.getBooksCollection()) {
-                booksCollectionBooksToAttach = em.getReference(booksCollectionBooksToAttach.getClass(), booksCollectionBooksToAttach.getBookId());
-                attachedBooksCollection.add(booksCollectionBooksToAttach);
+            List<Books> attachedBooksList = new ArrayList<Books>();
+            for (Books booksListBooksToAttach : category.getBooksList()) {
+                booksListBooksToAttach = em.getReference(booksListBooksToAttach.getClass(), booksListBooksToAttach.getBookId());
+                attachedBooksList.add(booksListBooksToAttach);
             }
-            category.setBooksCollection(attachedBooksCollection);
+            category.setBooksList(attachedBooksList);
             em.persist(category);
-            for (Books booksCollectionBooks : category.getBooksCollection()) {
-                booksCollectionBooks.getCategoryCollection().add(category);
-                booksCollectionBooks = em.merge(booksCollectionBooks);
+            for (Books booksListBooks : category.getBooksList()) {
+                booksListBooks.getCategoryList().add(category);
+                booksListBooks = em.merge(booksListBooks);
             }
             em.getTransaction().commit();
         } finally {
@@ -67,26 +66,26 @@ public class CategoryFacade implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Category persistentCategory = em.find(Category.class, category.getCategoryId());
-            Collection<Books> booksCollectionOld = persistentCategory.getBooksCollection();
-            Collection<Books> booksCollectionNew = category.getBooksCollection();
-            Collection<Books> attachedBooksCollectionNew = new ArrayList<Books>();
-            for (Books booksCollectionNewBooksToAttach : booksCollectionNew) {
-                booksCollectionNewBooksToAttach = em.getReference(booksCollectionNewBooksToAttach.getClass(), booksCollectionNewBooksToAttach.getBookId());
-                attachedBooksCollectionNew.add(booksCollectionNewBooksToAttach);
+            List<Books> booksListOld = persistentCategory.getBooksList();
+            List<Books> booksListNew = category.getBooksList();
+            List<Books> attachedBooksListNew = new ArrayList<Books>();
+            for (Books booksListNewBooksToAttach : booksListNew) {
+                booksListNewBooksToAttach = em.getReference(booksListNewBooksToAttach.getClass(), booksListNewBooksToAttach.getBookId());
+                attachedBooksListNew.add(booksListNewBooksToAttach);
             }
-            booksCollectionNew = attachedBooksCollectionNew;
-            category.setBooksCollection(booksCollectionNew);
+            booksListNew = attachedBooksListNew;
+            category.setBooksList(booksListNew);
             category = em.merge(category);
-            for (Books booksCollectionOldBooks : booksCollectionOld) {
-                if (!booksCollectionNew.contains(booksCollectionOldBooks)) {
-                    booksCollectionOldBooks.getCategoryCollection().remove(category);
-                    booksCollectionOldBooks = em.merge(booksCollectionOldBooks);
+            for (Books booksListOldBooks : booksListOld) {
+                if (!booksListNew.contains(booksListOldBooks)) {
+                    booksListOldBooks.getCategoryList().remove(category);
+                    booksListOldBooks = em.merge(booksListOldBooks);
                 }
             }
-            for (Books booksCollectionNewBooks : booksCollectionNew) {
-                if (!booksCollectionOld.contains(booksCollectionNewBooks)) {
-                    booksCollectionNewBooks.getCategoryCollection().add(category);
-                    booksCollectionNewBooks = em.merge(booksCollectionNewBooks);
+            for (Books booksListNewBooks : booksListNew) {
+                if (!booksListOld.contains(booksListNewBooks)) {
+                    booksListNewBooks.getCategoryList().add(category);
+                    booksListNewBooks = em.merge(booksListNewBooks);
                 }
             }
             em.getTransaction().commit();
@@ -118,10 +117,10 @@ public class CategoryFacade implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The category with id " + id + " no longer exists.", enfe);
             }
-            Collection<Books> booksCollection = category.getBooksCollection();
-            for (Books booksCollectionBooks : booksCollection) {
-                booksCollectionBooks.getCategoryCollection().remove(category);
-                booksCollectionBooks = em.merge(booksCollectionBooks);
+            List<Books> booksList = category.getBooksList();
+            for (Books booksListBooks : booksList) {
+                booksListBooks.getCategoryList().remove(category);
+                booksListBooks = em.merge(booksListBooks);
             }
             em.remove(category);
             em.getTransaction().commit();

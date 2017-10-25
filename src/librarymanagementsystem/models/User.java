@@ -6,19 +6,18 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -40,10 +39,6 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "User.findByThirdSecretAnswer", query = "SELECT u FROM User u WHERE u.thirdSecretAnswer = :thirdSecretAnswer")
     , @NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role")})
 public class User implements Serializable {
-
-    @Basic(optional = false)
-    @Column(name = "profile_id")
-    private int profileId;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -78,8 +73,9 @@ public class User implements Serializable {
     @Basic(optional = false)
     @Column(name = "role")
     private String role;
-    @ManyToMany(mappedBy = "userCollection")
-    private Collection<Profile> profileCollection;
+    @JoinColumn(name = "profile_id", referencedColumnName = "profile_id")
+    @ManyToOne(optional = false)
+    private Profile profileId;
 
     public User() {
     }
@@ -181,13 +177,12 @@ public class User implements Serializable {
         this.role = role;
     }
 
-    @XmlTransient
-    public Collection<Profile> getProfileCollection() {
-        return profileCollection;
+    public Profile getProfileId() {
+        return profileId;
     }
 
-    public void setProfileCollection(Collection<Profile> profileCollection) {
-        this.profileCollection = profileCollection;
+    public void setProfileId(Profile profileId) {
+        this.profileId = profileId;
     }
 
     @Override
@@ -213,14 +208,6 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "librarymanagementsystem.models.User[ id=" + id + " ]";
-    }
-
-    public int getProfileId() {
-        return profileId;
-    }
-
-    public void setProfileId(int profileId) {
-        this.profileId = profileId;
     }
     
 }

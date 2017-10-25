@@ -6,18 +6,17 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -56,11 +55,8 @@ public class Profile implements Serializable {
     @Basic(optional = false)
     @Column(name = "phone_number")
     private String phoneNumber;
-    @JoinTable(name = "tbl_user_profile", joinColumns = {
-        @JoinColumn(name = "profile_id", referencedColumnName = "profile_id")}, inverseJoinColumns = {
-        @JoinColumn(name = "user_id", referencedColumnName = "id")})
-    @ManyToMany
-    private Collection<User> userCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profileId")
+    private List<User> userList;
 
     public Profile() {
     }
@@ -118,12 +114,12 @@ public class Profile implements Serializable {
     }
 
     @XmlTransient
-    public Collection<User> getUserCollection() {
-        return userCollection;
+    public List<User> getUserList() {
+        return userList;
     }
 
-    public void setUserCollection(Collection<User> userCollection) {
-        this.userCollection = userCollection;
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
     }
 
     @Override

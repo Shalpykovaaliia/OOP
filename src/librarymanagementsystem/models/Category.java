@@ -6,8 +6,8 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,8 +60,8 @@ public class Category implements Serializable {
     @Column(name = "date_updated")
     @Temporal(TemporalType.DATE)
     private Date dateUpdated;
-    @ManyToMany(mappedBy = "categoryCollection")
-    private Collection<Books> booksCollection;
+    @ManyToMany(mappedBy = "categoryList")
+    private List<Books> booksList;
 
     public Category() {
     }
@@ -119,12 +119,12 @@ public class Category implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Books> getBooksCollection() {
-        return booksCollection;
+    public List<Books> getBooksList() {
+        return booksList;
     }
 
-    public void setBooksCollection(Collection<Books> booksCollection) {
-        this.booksCollection = booksCollection;
+    public void setBooksList(List<Books> booksList) {
+        this.booksList = booksList;
     }
 
     @Override

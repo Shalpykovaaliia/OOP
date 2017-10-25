@@ -28,11 +28,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "tbl_book_overdue")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "BookOverdue.findAll", query = "SELECT t FROM BookOverdue t")
-    , @NamedQuery(name = "BookOverdue.findByComputedFee", query = "SELECT t FROM BookOverdue t WHERE t.computedFee = :computedFee")
-    , @NamedQuery(name = "BookOverdue.findByPaid", query = "SELECT t FROM BookOverdue t WHERE t.paid = :paid")
-    , @NamedQuery(name = "BookOverdue.findByBalance", query = "SELECT t FROM BookOverdue t WHERE t.balance = :balance")
-    , @NamedQuery(name = "BookOverdue.findById", query = "SELECT t FROM BookOverdue t WHERE t.id = :id")})
+    @NamedQuery(name = "BookOverdue.findAll", query = "SELECT b FROM BookOverdue b")
+    , @NamedQuery(name = "BookOverdue.findByComputedFee", query = "SELECT b FROM BookOverdue b WHERE b.computedFee = :computedFee")
+    , @NamedQuery(name = "BookOverdue.findByPaid", query = "SELECT b FROM BookOverdue b WHERE b.paid = :paid")
+    , @NamedQuery(name = "BookOverdue.findByBalance", query = "SELECT b FROM BookOverdue b WHERE b.balance = :balance")
+    , @NamedQuery(name = "BookOverdue.findById", query = "SELECT b FROM BookOverdue b WHERE b.id = :id")})
 public class BookOverdue implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -143,7 +143,7 @@ public class BookOverdue implements Serializable {
 
     @Override
     public String toString() {
-        return "librarymanagementsystem.models.TblBookOverdue[ id=" + id + " ]";
+        return "librarymanagementsystem.models.BookOverdue[ id=" + id + " ]";
     }
     
 }

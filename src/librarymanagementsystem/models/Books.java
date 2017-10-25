@@ -6,8 +6,8 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -86,7 +86,7 @@ public class Books implements Serializable {
         @JoinColumn(name = "book_id", referencedColumnName = "book_id")}, inverseJoinColumns = {
         @JoinColumn(name = "category_id", referencedColumnName = "category_id")})
     @ManyToMany
-    private Collection<Category> categoryCollection;
+    private List<Category> categoryList;
 
     public Books() {
     }
@@ -189,12 +189,12 @@ public class Books implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Category> getCategoryCollection() {
-        return categoryCollection;
+    public List<Category> getCategoryList() {
+        return categoryList;
     }
 
-    public void setCategoryCollection(Collection<Category> categoryCollection) {
-        this.categoryCollection = categoryCollection;
+    public void setCategoryList(List<Category> categoryList) {
+        this.categoryList = categoryList;
     }
 
     @Override

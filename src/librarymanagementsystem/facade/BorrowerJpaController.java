@@ -20,9 +20,9 @@ import librarymanagementsystem.models.Borrower;
  *
  * @author User
  */
-public class BorrowerFacade implements Serializable {
+public class BorrowerJpaController implements Serializable {
 
-    public BorrowerFacade(EntityManagerFactory emf) {
+    public BorrowerJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;

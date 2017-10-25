@@ -13,7 +13,6 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -354,7 +353,7 @@ public class ManageUserController implements Initializable {
         if (!this.passwordField.getText().equals("") && !retypePasswordField.getText().equals("")) {
             this.currentUser.setPassword(passwordField.getText());
         }
-        ArrayList<Profile> userProfileCollection = new ArrayList<>(currentUser.getProfileCollection());
+        
         Profile profile = new Profile();
         if(userProfileCollection != null && userProfileCollection.size() > 0 ){
             // get the profile 
@@ -362,7 +361,7 @@ public class ManageUserController implements Initializable {
             // clear the profile collection
             // add the profile
         }else { 
-            profile = userProfileCollection
+            
         }
         this.userFacade.edit(currentUser);
         
