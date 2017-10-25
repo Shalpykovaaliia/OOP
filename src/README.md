@@ -51,88 +51,125 @@ Features
 
 
 
-DIRECTORY STRUCTURE
--------------------
-
-      assets/             contains assets definition
-      commands/           contains console commands (controllers)
-      config/             contains application configurations
-      controllers/        contains Web controller classes
-      mail/               contains view files for e-mails
-      models/             contains model classes
-      runtime/            contains files generated during runtime
-      tests/              contains various tests for the basic application
-      vendor/             contains dependent 3rd-party packages
-      views/              contains view files for the Web application
-      web/                contains the entry script and Web resources
-
-
-
-REQUIREMENTS
+Tables
 ------------
 
-  * The minimum requirement by this project template that your Web server supports PHP 5.4.0.
-  * php is added in path location.
+Database Schema
 
 
-INSTALLATION
+tbl_books
+book_id
+ISBN
+availability
+title
+author
+description
+edition
+edition_year
+date_created
+date_updated
+
+tbl_category
+category_id
+title
+description
+date_created
+date_updated
+
+tbl_book_category
+book_id
+category_id
+
+tbl_borrower
+borrower_id
+title
+firstname
+lastname
+birthday
+gender
+address 1
+address 2
+address 3
+postal_code
+town
+country
+mobile_number
+email_address
+
+
+tbl_book_borrower
+id
+book_id
+borrower_id
+date_returned
+expected_return_date
+date_borrowed
+notes
+
+
+tbl_book_overdue
+book_borrower_ref_id
+computed_fee
+paid
+balance
+notes
+
+tbl_user
+id
+username
+password
+first_secret_question
+first_secret_answer
+second_secret_question
+second_secret_answer
+third_secret_question
+third_secret_answer
+
+tbl_profile
+profile_id
+firstname
+lastname
+email_address
+phone_number
+
+
+tbl_user_profile
+user_id
+profile_id
+
+
+
+Actor
 ------------
-
-### Install from an Archive File
-
-1.) Extract the archive compressed file to desired location or any location
-1.) Download https://getcomposer.org/download/1.5.2/composer.phar
-1.) Place the download composer.phar to the extracted folder. Paste the composer.phar next to start.bat. 
-1.) Double click install.bat
+	Administrator
+	Librarian
+	Borrower
 
 
 
 
-You can then access the application through the following URL:
-
-~~~
-http://localhost:8080
-~~~
 
 
-CONFIGURATION
--------------
-
-### Database
-
-Edit the file `config/db.php` with real data, for example:
-
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
-```
-
-**NOTES:**
-- It won't create the database for you, this has to be done manually before you can access it.
-- Check and edit the other files in the `config/` directory to customize your application as required.
 
 
-TESTING
--------
 
-Tests are located in `tests` directory. They are developed with [Codeception PHP Testing Framework](http://codeception.com/).
-By default there are 3 test suites:
 
-- `unit`
-- `functional`
-- `acceptance`
 
-Tests can be executed by running
 
-```
-vendor/bin/codecept run
-```
 
-The command above will execute unit and functional tests. Unit tests are testing the system components, while functional
-tests are for testing user interaction. Acceptance tests are disabled by default as they require additional setup since
-they perform testing in real browser. 
+
+
+
+
+
+
+
+
+@TODO - 
+loading javafxml problem 
+
+
+@TODO - load all javafxml on load 
+
+@TODO  - create map that will hold the application view collection 
+to be called later in the application

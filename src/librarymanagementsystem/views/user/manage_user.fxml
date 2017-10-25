@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="374.0" prefWidth="1118.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="librarymanagementsystem.controllers.ManageUserController">
+   <children>
+      <BorderPane layoutX="38.0" prefHeight="722.0" prefWidth="825.0" AnchorPane.bottomAnchor="-120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <AnchorPane prefHeight="84.0" prefWidth="854.0" style="-fx-background-color: #2895F8;" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox layoutX="41.0" layoutY="6.0" prefHeight="86.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#returnBack" prefHeight="30.0" prefWidth="91.0" style="-fx-background-color: rgba(255,255,255,0.2);" text="Back" textFill="WHITE">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </HBox.margin>
+                        </JFXButton>
+                        <AnchorPane prefHeight="84.0" prefWidth="772.0" HBox.hgrow="ALWAYS" />
+                        <VBox prefHeight="84.0" prefWidth="231.0">
+                           <children>
+                              <Label lineSpacing="1.0" text="Manage System User" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label text="Manage the accounts that can access the system" textFill="WHITE">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+         </top>
+         <center>
+            <VBox prefHeight="638.0" prefWidth="566.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox prefHeight="56.0" prefWidth="632.0" spacing="20.0">
+                     <children>
+                        <JFXTextField fx:id="filterTextField" onAction="#filterGridTable" prefHeight="34.0" prefWidth="459.0" promptText="Filter by name or ID" />
+                        <JFXButton fx:id="filterGridBtn" onAction="#filterGridTable" prefHeight="37.0" prefWidth="117.0" style="-fx-background-color: #00C0EF;" text="Filter" textFill="WHITE">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </JFXButton>
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                  </HBox>
+                  <TableView fx:id="systemUserTable" prefHeight="411.0" prefWidth="632.0">
+                    <columns>
+                        <TableColumn fx:id="idTableColumn" prefWidth="75.0" text="ID" />
+                      <TableColumn fx:id="usernameTableColumn" prefWidth="75.0" text="Username" />
+                      <TableColumn fx:id="ownerNameTableColumn" prefWidth="75.0" text="Owner Name" />
+                        <TableColumn fx:id="roleTableColumn" prefWidth="75.0" text="Role" />
+                    </columns>
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </VBox.margin>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+            </VBox>
+         </center>
+         <left>
+            <AnchorPane prefHeight="709.0" prefWidth="486.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox prefHeight="638.0" prefWidth="479.0">
+                     <children>
+                        <VBox prefHeight="638.0" prefWidth="288.0" spacing="40.0">
+                           <children>
+                              <Label text="Account Details" />
+                              <JFXTextField fx:id="usernameTextField" labelFloat="true" promptText="Username" />
+                              <JFXPasswordField fx:id="passwordField" labelFloat="true" promptText="Password" />
+                              <JFXPasswordField fx:id="retypePasswordField" labelFloat="true" promptText="Re-type Password" />
+                           </children>
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                        </VBox>
+                        <VBox prefHeight="638.0" prefWidth="304.0" spacing="40.0">
+                           <children>
+                              <Label text="Owner Information" />
+                              <JFXTextField fx:id="firstnameField" promptText="Firstname" />
+                              <JFXTextField fx:id="lastnameField" promptText="Lastname" />
+                              <JFXTextField fx:id="emailAddressField" promptText="Email Address" />
+                              <JFXTextField fx:id="phoneField" promptText="Phone Number" />
+                              <JFXButton fx:id="submitBtn" onAction="#submitRecord" prefHeight="43.0" prefWidth="208.0" style="-fx-background-color: #00A65A;" text="Submit" textFill="WHITE">
+                                 <VBox.margin>
+                                    <Insets top="60.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                           </children>
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+         </left>
+      </BorderPane>
+   </children>
+</AnchorPane>

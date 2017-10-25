@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="525.0" prefWidth="884.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="librarymanagementsystem.controllers.DashboardController">
+   <children>
+      <HBox layoutX="1.0" prefHeight="100.0" prefWidth="774.0" style="-fx-background-color: #2895F8;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="355.0">
+               <children>
+                  <FontAwesomeIconView fill="WHITE" glyphName="BOOK" size="75" wrappingWidth="55.71428680419922">
+                     <HBox.margin>
+                        <Insets left="20.0" right="5.0" top="10.0" />
+                     </HBox.margin>
+                  </FontAwesomeIconView>
+                  <VBox prefHeight="100.0" prefWidth="222.0" spacing="5.0">
+                     <children>
+                        <Label text="J.A.R.S" textFill="WHITE">
+                           <font>
+                              <Font size="28.0" />
+                           </font>
+                        </Label>
+                        <Label text="Library Management System" textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </HBox>
+            <AnchorPane prefHeight="100.0" prefWidth="292.0" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets top="50.0" />
+               </HBox.margin>
+            </AnchorPane>
+            <HBox prefHeight="100.0" prefWidth="231.0">
+               <children>
+                  <FontAwesomeIconView fill="WHITE" glyphName="USER" size="50">
+                     <HBox.margin>
+                        <Insets top="40.0" />
+                     </HBox.margin>
+                  </FontAwesomeIconView>
+                  <VBox prefHeight="100.0" prefWidth="222.0" spacing="5.0">
+                     <children>
+                        <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="30.0" />
+                        <Label fx:id="currentUserName" text="Kevin Florenz Daus" textFill="WHITE">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Label>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                           <children>
+                              <Label text="Administrator" textFill="WHITE">
+                                 <HBox.margin>
+                                    <Insets top="2.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label text="|" textFill="WHITE">
+                                 <HBox.margin>
+                                    <Insets top="1.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Hyperlink fx:id="logoutLink" onAction="#logOut" text="Logout" textAlignment="CENTER" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Hyperlink>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </HBox>
+         </children>
+      </HBox>
+      <AnchorPane layoutY="110.0" prefHeight="415.0" prefWidth="200.0" style="-fx-background-color: #35384D;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="110.0">
+         <children>
+            <VBox layoutY="20.0" prefHeight="396.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+               <children>
+                  <JFXButton fx:id="borrowerBtn" onAction="#openBorrower" prefHeight="84.0" prefWidth="200.0" text="    Borrower" textFill="WHITE" VBox.vgrow="ALWAYS">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="USERS" size="20" strokeType="INSIDE" />
+                     </graphic>
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </JFXButton>
+                  <JFXButton fx:id="bookBtn" onAction="#openBookRecord" prefHeight="84.0" prefWidth="200.0" text="    Book       " textFill="WHITE" VBox.vgrow="ALWAYS">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="BOOK" size="20" />
+                     </graphic>
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </JFXButton>
+                  <JFXButton fx:id="scanBtn" onAction="#openScanPanel" prefHeight="84.0" prefWidth="200.0" text="    Scan       " textFill="WHITE" VBox.vgrow="ALWAYS">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="BARCODE" size="20" />
+                     </graphic>
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </JFXButton>
+                  <JFXButton fx:id="openSystemUserBtn" onAction="#openSystemUser" prefHeight="84.0" prefWidth="200.0" text="System User" textFill="WHITE" VBox.vgrow="ALWAYS">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="EXPEDITEDSSL" size="20" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="settingsBtn1" onAction="#openSettings" prefHeight="84.0" prefWidth="200.0" text="    Settings" textFill="WHITE">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="COGS" size="20" />
+                     </graphic>
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </JFXButton>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="200.0" layoutY="120.0" prefHeight="405.0" prefWidth="684.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,181 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package librarymanagementsystem.facade;
+
+import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import librarymanagementsystem.models.Category;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
+import librarymanagementsystem.models.Books;
+
+/**
+ *
+ * @author User
+ */
+public class BooksFacade implements Serializable {
+
+    public BooksFacade(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+    private EntityManagerFactory emf = null;
+
+    public EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+
+    public void create(Books books) {
+        if (books.getCategoryCollection() == null) {
+            books.setCategoryCollection(new ArrayList<Category>());
+        }
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            Collection<Category> attachedCategoryCollection = new ArrayList<Category>();
+            for (Category categoryCollectionCategoryToAttach : books.getCategoryCollection()) {
+                categoryCollectionCategoryToAttach = em.getReference(categoryCollectionCategoryToAttach.getClass(), categoryCollectionCategoryToAttach.getCategoryId());
+                attachedCategoryCollection.add(categoryCollectionCategoryToAttach);
+            }
+            books.setCategoryCollection(attachedCategoryCollection);
+            em.persist(books);
+            for (Category categoryCollectionCategory : books.getCategoryCollection()) {
+                categoryCollectionCategory.getBooksCollection().add(books);
+                categoryCollectionCategory = em.merge(categoryCollectionCategory);
+            }
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public void edit(Books books) throws NonexistentEntityException, Exception {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            Books persistentBooks = em.find(Books.class, books.getBookId());
+            Collection<Category> categoryCollectionOld = persistentBooks.getCategoryCollection();
+            Collection<Category> categoryCollectionNew = books.getCategoryCollection();
+            Collection<Category> attachedCategoryCollectionNew = new ArrayList<Category>();
+            for (Category categoryCollectionNewCategoryToAttach : categoryCollectionNew) {
+                categoryCollectionNewCategoryToAttach = em.getReference(categoryCollectionNewCategoryToAttach.getClass(), categoryCollectionNewCategoryToAttach.getCategoryId());
+                attachedCategoryCollectionNew.add(categoryCollectionNewCategoryToAttach);
+            }
+            categoryCollectionNew = attachedCategoryCollectionNew;
+            books.setCategoryCollection(categoryCollectionNew);
+            books = em.merge(books);
+            for (Category categoryCollectionOldCategory : categoryCollectionOld) {
+                if (!categoryCollectionNew.contains(categoryCollectionOldCategory)) {
+                    categoryCollectionOldCategory.getBooksCollection().remove(books);
+                    categoryCollectionOldCategory = em.merge(categoryCollectionOldCategory);
+                }
+            }
+            for (Category categoryCollectionNewCategory : categoryCollectionNew) {
+                if (!categoryCollectionOld.contains(categoryCollectionNewCategory)) {
+                    categoryCollectionNewCategory.getBooksCollection().add(books);
+                    categoryCollectionNewCategory = em.merge(categoryCollectionNewCategory);
+                }
+            }
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            String msg = ex.getLocalizedMessage();
+            if (msg == null || msg.length() == 0) {
+                Integer id = books.getBookId();
+                if (findBooks(id) == null) {
+                    throw new NonexistentEntityException("The books with id " + id + " no longer exists.");
+                }
+            }
+            throw ex;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public void destroy(Integer id) throws NonexistentEntityException {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            Books books;
+            try {
+                books = em.getReference(Books.class, id);
+                books.getBookId();
+            } catch (EntityNotFoundException enfe) {
+                throw new NonexistentEntityException("The books with id " + id + " no longer exists.", enfe);
+            }
+            Collection<Category> categoryCollection = books.getCategoryCollection();
+            for (Category categoryCollectionCategory : categoryCollection) {
+                categoryCollectionCategory.getBooksCollection().remove(books);
+                categoryCollectionCategory = em.merge(categoryCollectionCategory);
+            }
+            em.remove(books);
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public List<Books> findBooksEntities() {
+        return findBooksEntities(true, -1, -1);
+    }
+
+    public List<Books> findBooksEntities(int maxResults, int firstResult) {
+        return findBooksEntities(false, maxResults, firstResult);
+    }
+
+    private List<Books> findBooksEntities(boolean all, int maxResults, int firstResult) {
+        EntityManager em = getEntityManager();
+        try {
+            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            cq.select(cq.from(Books.class));
+            Query q = em.createQuery(cq);
+            if (!all) {
+                q.setMaxResults(maxResults);
+                q.setFirstResult(firstResult);
+            }
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Books findBooks(Integer id) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(Books.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    public int getBooksCount() {
+        EntityManager em = getEntityManager();
+        try {
+            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            Root<Books> rt = cq.from(Books.class);
+            cq.select(em.getCriteriaBuilder().count(rt));
+            Query q = em.createQuery(cq);
+            return ((Long) q.getSingleResult()).intValue();
+        } finally {
+            em.close();
+        }
+    }
+    
+}
