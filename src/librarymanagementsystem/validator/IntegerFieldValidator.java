@@ -19,7 +19,7 @@ public class IntegerFieldValidator extends ValidatorBase{
     protected void eval() {
         TextInputControl currentInput = (TextInputControl) srcControl.get();
         try{
-            Integer.parseInt(currentInput.getText());
+            Double.parseDouble(currentInput.getText());
             hasErrors.set(false);
         }catch(NumberFormatException ex){
             hasErrors.set(true);

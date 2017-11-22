@@ -37,10 +37,10 @@ public class UserJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Profile profileId = user.getProfileId();
+            Profile profileId = user.getProfile();
             if (profileId != null) {
                 profileId = em.getReference(profileId.getClass(), profileId.getProfileId());
-                user.setProfileId(profileId);
+                user.setProfile(profileId);
             }
             em.persist(user);
             if (profileId != null) {
@@ -61,11 +61,11 @@ public class UserJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             User persistentUser = em.find(User.class, user.getId());
-            Profile profileIdOld = persistentUser.getProfileId();
-            Profile profileIdNew = user.getProfileId();
+            Profile profileIdOld = persistentUser.getProfile();
+            Profile profileIdNew = user.getProfile();
             if (profileIdNew != null) {
                 profileIdNew = em.getReference(profileIdNew.getClass(), profileIdNew.getProfileId());
-                user.setProfileId(profileIdNew);
+                user.setProfile(profileIdNew);
             }
             user = em.merge(user);
             if (profileIdOld != null && !profileIdOld.equals(profileIdNew)) {
@@ -105,7 +105,7 @@ public class UserJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The user with id " + id + " no longer exists.", enfe);
             }
-            Profile profileId = user.getProfileId();
+            Profile profileId = user.getProfile();
             if (profileId != null) {
                 profileId.getUserList().remove(user);
                 profileId = em.merge(profileId);

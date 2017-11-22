@@ -75,7 +75,7 @@ public class User implements Serializable {
     private String role;
     @JoinColumn(name = "profile_id", referencedColumnName = "profile_id")
     @ManyToOne(optional = false)
-    private Profile profileId;
+    private Profile profile;
 
     public User() {
     }
@@ -177,12 +177,12 @@ public class User implements Serializable {
         this.role = role;
     }
 
-    public Profile getProfileId() {
-        return profileId;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setProfileId(Profile profileId) {
-        this.profileId = profileId;
+    public void setProfile(Profile profileId) {
+        this.profile = profileId;
     }
 
     @Override

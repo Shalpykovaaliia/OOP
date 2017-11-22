@@ -51,7 +51,10 @@ public class LibraryManagementSystem extends Application {
         // load the views
         this.loadViews();
         //get and show the login pane
+        
+        
         LibraryManagementSystem.showView("user.manage");
+        
 //        LibraryManagementSystem.showView("settings.manage");
 //        LibraryManagementSystem.showView("user.login");
     }
@@ -72,6 +75,13 @@ public class LibraryManagementSystem extends Application {
         RECENT_PANE_HISTORY.add(returnedViewed);
         LibraryManagementSystem.APP_ROOT_PANE.show();
     }
+    public static void fullScreen(){
+        LibraryManagementSystem.APP_ROOT_PANE.setMaximized(true);
+    }
+    public static void undoFullScreen(){
+        LibraryManagementSystem.APP_ROOT_PANE.setMaximized(false);
+    }
+    
 
     public static void back() {
         // show recent view

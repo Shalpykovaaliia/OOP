@@ -50,8 +50,8 @@ public class ProfileJpaController implements Serializable {
             profile.setUserList(attachedUserList);
             em.persist(profile);
             for (User userListUser : profile.getUserList()) {
-                Profile oldProfileIdOfUserListUser = userListUser.getProfileId();
-                userListUser.setProfileId(profile);
+                Profile oldProfileIdOfUserListUser = userListUser.getProfile();
+                userListUser.setProfile(profile);
                 userListUser = em.merge(userListUser);
                 if (oldProfileIdOfUserListUser != null) {
                     oldProfileIdOfUserListUser.getUserList().remove(userListUser);
@@ -96,8 +96,8 @@ public class ProfileJpaController implements Serializable {
             profile = em.merge(profile);
             for (User userListNewUser : userListNew) {
                 if (!userListOld.contains(userListNewUser)) {
-                    Profile oldProfileIdOfUserListNewUser = userListNewUser.getProfileId();
-                    userListNewUser.setProfileId(profile);
+                    Profile oldProfileIdOfUserListNewUser = userListNewUser.getProfile();
+                    userListNewUser.setProfile(profile);
                     userListNewUser = em.merge(userListNewUser);
                     if (oldProfileIdOfUserListNewUser != null && !oldProfileIdOfUserListNewUser.equals(profile)) {
                         oldProfileIdOfUserListNewUser.getUserList().remove(userListNewUser);

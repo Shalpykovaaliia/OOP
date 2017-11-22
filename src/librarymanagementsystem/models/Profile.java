@@ -55,7 +55,7 @@ public class Profile implements Serializable {
     @Basic(optional = false)
     @Column(name = "phone_number")
     private String phoneNumber;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profileId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
     private List<User> userList;
 
     public Profile() {

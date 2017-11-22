@@ -23,11 +23,14 @@ public class SameFieldValidator extends ValidatorBase{
     @Override
     protected void eval() {
         TextInputControl currentInput = (TextInputControl)srcControl.get();
-        
-        if(!currentInput.getText().equals(this.retypedInput.getText())){
-            hasErrors.set(true);
-        }else{
+        System.out.println(currentInput.getText());
+        System.out.println(this.retypedInput.getText());
+        Boolean isEqual = new Boolean(currentInput.getText().equals(this.retypedInput.getText()));
+        System.out.println("Is equal : "+isEqual.toString());
+        if(isEqual){
             hasErrors.set(false);
+        }else{
+            hasErrors.set(true);
         }
     }
     
