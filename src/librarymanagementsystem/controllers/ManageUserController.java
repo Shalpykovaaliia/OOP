@@ -47,6 +47,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.swing.JTextField;
 import librarymanagementsystem.beans.UserBean;
 import librarymanagementsystem.components.Sha1Hash;
@@ -58,6 +59,8 @@ import librarymanagementsystem.models.User;
 import librarymanagementsystem.validator.EmailAddressValidator;
 import librarymanagementsystem.validator.IntegerFieldValidator;
 import librarymanagementsystem.validator.SameFieldValidator;
+import org.eclipse.persistence.config.HintValues;
+import org.eclipse.persistence.config.QueryHints;
 
 /**
  * FXML Controller class
@@ -353,6 +356,7 @@ public class ManageUserController implements Initializable {
             Logger.getLogger(ManageUserController.class.getName()).log(Level.SEVERE, null, ex);
         }
         loadListOfUsers();
+        this.clearFields();
         System.out.println("Done saving");
 
     }
@@ -403,7 +407,9 @@ public class ManageUserController implements Initializable {
     }
 
     private void loadListOfUsers() {
-        List<User> users = em.createNamedQuery("User.findAll").getResultList();
+        Query namedQuery = em.createNamedQuery("User.findAll");
+        namedQuery.setHint(QueryHints.REFRESH, HintValues.TRUE);
+        List<User> users = namedQuery.getResultList();
         ObservableList<UserBean> userData = FXCollections.observableArrayList();
         for (Iterator<User> iterator = users.iterator(); iterator.hasNext();) {
             User curUser = iterator.next();

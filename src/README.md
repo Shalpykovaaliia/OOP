@@ -1,7 +1,5 @@
 <h1 align="center">LIbrary Management System  for JARS </h1>
 
-
-
 Features
 -------------------
   * Manage Borrower
@@ -148,28 +146,21 @@ Actor
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @TODO - 
 loading javafxml problem 
-
+@DONE
 
 @TODO - load all javafxml on load 
-
+@DONE
 @TODO  - create map that will hold the application view collection 
 to be called later in the application
+@DONE
+
+@TODO - manage book record
+bug on after updating the record . the list should contain the update records. 
+its not updating record
+@DONE
+
+Nice things to have
+
+@TODO - detect database configuration. allow user to set database configuration

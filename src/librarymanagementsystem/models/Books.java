@@ -20,6 +20,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.QueryHint;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -71,14 +72,14 @@ public class Books implements Serializable {
     @Basic(optional = false)
     @Column(name = "edition")
     private String edition;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "edition_year")
     private String editionYear;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "date_created")
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "date_updated")
     @Temporal(TemporalType.DATE)
     private Date dateUpdated;

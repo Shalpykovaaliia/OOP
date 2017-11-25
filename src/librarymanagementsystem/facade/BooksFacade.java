@@ -22,9 +22,9 @@ import librarymanagementsystem.models.Books;
  *
  * @author User
  */
-public class BooksJpaController implements Serializable {
+public class BooksFacade implements Serializable {
 
-    public BooksJpaController(EntityManagerFactory emf) {
+    public BooksFacade(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
