@@ -161,6 +161,25 @@ bug on after updating the record . the list should contain the update records.
 its not updating record
 @DONE
 
+
+@TODO - dashboard put button allowing user to borrow book . 
+inputting book id and borrower . show only available book and put partial search by book name
+
+@TODO - a button that opens list of books and their availability. allow user to search partial/filter by book name 
+
+@TODO - a button that opens list of overdue books
+        (number of days overdue x fine)
+
+@TODO - dasboard button that opens return book panel
+
+@TODO - thread that will overdue books and then invoke system notification showing "an overdue book is detected" or something like that
+      - attach SMS notifier
+
+
+@TODO - Settings panel that reports number of sms credits left.
+
 Nice things to have
 
 @TODO - detect database configuration. allow user to set database configuration
+
+

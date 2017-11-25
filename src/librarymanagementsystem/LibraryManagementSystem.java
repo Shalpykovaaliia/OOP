@@ -53,10 +53,11 @@ public class LibraryManagementSystem extends Application {
         //get and show the login pane
         
         
+        //LibraryManagementSystem.showView("borrower.manage");
         //LibraryManagementSystem.showView("user.manage");
-        LibraryManagementSystem.showView("book.manage");
-//        LibraryManagementSystem.showView("settings.manage");
-//        LibraryManagementSystem.showView("user.login");
+        //LibraryManagementSystem.showView("book.manage");
+        //LibraryManagementSystem.showView("settings.manage");
+        LibraryManagementSystem.showView("user.login");
     }
 
     /**

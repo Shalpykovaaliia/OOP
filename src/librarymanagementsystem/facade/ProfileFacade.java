@@ -23,9 +23,9 @@ import librarymanagementsystem.models.Profile;
  *
  * @author User
  */
-public class ProfileJpaController implements Serializable {
+public class ProfileFacade implements Serializable {
 
-    public ProfileJpaController(EntityManagerFactory emf) {
+    public ProfileFacade(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;

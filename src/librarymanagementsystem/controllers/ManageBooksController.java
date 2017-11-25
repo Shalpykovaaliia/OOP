@@ -96,7 +96,7 @@ public class ManageBooksController implements Initializable {
 
     @FXML
     private JFXTextField bookEditionYear;
-    
+
     @FXML
     private JFXButton submitBtn;
     private RequiredFieldValidator isbnValidator;
@@ -124,16 +124,8 @@ public class ManageBooksController implements Initializable {
                     }
                 }
             }
-            if (formField instanceof JFXPasswordField) {
-                JFXPasswordField formField2 = (JFXPasswordField) formField;
-                ObservableList<ValidatorBase> validators = formField2.getValidators();
-                for (ValidatorBase validator : validators) {
-                    if (validator.getHasErrors()) {
-                        this.errorMessages.add(validator.getMessage());
-                    }
-                }
-            }
         }
+
         //validation passed
         if (this.errorMessages.size() == 0) {
             //create new record
@@ -368,6 +360,7 @@ public class ManageBooksController implements Initializable {
             Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
             successAlert.setTitle("Record saved");
             successAlert.setContentText("Record successfully saved");
+            successAlert.showAndWait();
         } catch (Exception ex) {
             Alert errorInformation = new Alert(Alert.AlertType.ERROR);
             errorInformation.setTitle("We met some error along the way");

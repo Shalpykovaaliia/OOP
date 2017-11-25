@@ -51,8 +51,8 @@ import javax.persistence.Query;
 import javax.swing.JTextField;
 import librarymanagementsystem.beans.UserBean;
 import librarymanagementsystem.components.Sha1Hash;
-import librarymanagementsystem.facade.ProfileJpaController;
-import librarymanagementsystem.facade.UserJpaController;
+import librarymanagementsystem.facade.ProfileFacade;
+import librarymanagementsystem.facade.UserFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.models.Profile;
 import librarymanagementsystem.models.User;
@@ -113,8 +113,8 @@ public class ManageUserController implements Initializable {
 
     protected ContextMenu contextMenu;
 
-    private UserJpaController userFacade;
-    private ProfileJpaController profileFacade;
+    private UserFacade userFacade;
+    private ProfileFacade profileFacade;
 
     private RequiredFieldValidator fieldValidator;
 
@@ -194,8 +194,8 @@ public class ManageUserController implements Initializable {
         this.em = emf.createEntityManager();
 
         //load security question security question
-        this.userFacade = new UserJpaController(emf);
-        this.profileFacade = new ProfileJpaController(emf);
+        this.userFacade = new UserFacade(emf);
+        this.profileFacade = new ProfileFacade(emf);
 
         initializeValidators();
 
@@ -392,6 +392,7 @@ public class ManageUserController implements Initializable {
             errorInformation.showAndWait();
             Logger.getLogger(ManageUserController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.loadListOfUsers();
         this.clearFields();
         this.currentUser = null;
     }
@@ -411,6 +412,8 @@ public class ManageUserController implements Initializable {
         namedQuery.setHint(QueryHints.REFRESH, HintValues.TRUE);
         List<User> users = namedQuery.getResultList();
         ObservableList<UserBean> userData = FXCollections.observableArrayList();
+        ObservableList<UserBean> userItems = systemUserTable.getItems();
+        userItems.clear();
         for (Iterator<User> iterator = users.iterator(); iterator.hasNext();) {
             User curUser = iterator.next();
             UserBean userBean = new UserBean();
@@ -431,8 +434,6 @@ public class ManageUserController implements Initializable {
             }
             userData.add(userBean);
         }
-        ObservableList<UserBean> userItems = systemUserTable.getItems();
-        userItems.clear();
         userItems.addAll(userData);
     }
 

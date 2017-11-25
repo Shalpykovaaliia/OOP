@@ -21,9 +21,9 @@ import librarymanagementsystem.models.User;
  *
  * @author User
  */
-public class UserJpaController implements Serializable {
+public class UserFacade implements Serializable {
 
-    public UserJpaController(EntityManagerFactory emf) {
+    public UserFacade(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;

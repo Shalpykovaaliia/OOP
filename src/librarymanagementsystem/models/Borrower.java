@@ -68,13 +68,13 @@ public class Borrower implements Serializable {
     @Column(name = "gender")
     private String gender;
     @Basic(optional = false)
-    @Column(name = "address 1")
+    @Column(name = "address1")
     private String address1;
     @Basic(optional = false)
-    @Column(name = "address 2")
+    @Column(name = "address2")
     private String address2;
     @Basic(optional = false)
-    @Column(name = "address 3")
+    @Column(name = "address3")
     private String address3;
     @Basic(optional = false)
     @Column(name = "postal_code")
@@ -83,7 +83,7 @@ public class Borrower implements Serializable {
     @Column(name = "town")
     private String town;
     @Basic(optional = false)
-    @Column(name = "country")
+    @Column(name = "country" , columnDefinition = "varchar(255) default 'Philippines'")
     private String country;
     @Basic(optional = false)
     @Column(name = "mobile_number")
