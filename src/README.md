@@ -163,7 +163,14 @@ its not updating record
 
 
 @TODO - dashboard put button allowing user to borrow book . 
-inputting book id and borrower . show only available book and put partial search by book name
+inputting book id and borrower .show only available book and put partial search by book name
+
+@TODO - after login set the CUrrent User Login object.
+
+@TODO - on dashboard open . load the current username and its role.
+
+@TODO - allow user to print barcode image . put toolbox button that when clicked it prints all barcode image of books
+
 
 @TODO - a button that opens list of books and their availability. allow user to search partial/filter by book name 
 

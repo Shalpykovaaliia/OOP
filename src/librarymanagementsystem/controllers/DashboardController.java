@@ -79,6 +79,10 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // set the current user logged in's name
+        // set the current user logged in's role
+        // load number of borrowed books
+        // load number of books with issue and its borrower
         
     }
 
