@@ -50,6 +50,7 @@ public class DashboardController implements Initializable {
     void logOut(ActionEvent event) {
         // close current view
         LibraryManagementSystem.showView("user.login");
+        // set current user to null
     }
 
     @FXML
@@ -83,7 +84,7 @@ public class DashboardController implements Initializable {
         // set the current user logged in's role
         // load number of borrowed books
         // load number of books with issue and its borrower
-        
+
     }
 
     @FXML
@@ -94,6 +95,36 @@ public class DashboardController implements Initializable {
     @FXML
     void compress(MouseEvent event) {
         LibraryManagementSystem.APP_ROOT_PANE.setMaximized(false);
+    }
+
+    @FXML
+    void viewAllActiveBooks(ActionEvent event) {
+
+    }
+
+    @FXML
+    void viewAllBorrowedBooks(ActionEvent event) {
+
+    }
+
+    @FXML
+    void viewAllOverDueBooks(ActionEvent event) {
+
+    }
+
+    @FXML
+    void openBorrowBookView(ActionEvent event) {
+        LibraryManagementSystem.showView("book.borrow");
+    }
+
+    @FXML
+    void openReturnBookView(ActionEvent event) {
+        LibraryManagementSystem.showView("book.return");
+    }
+
+    @FXML
+    void openPenaltyReportView(ActionEvent event) {
+        LibraryManagementSystem.showView("settings.manage");
     }
 
 }
