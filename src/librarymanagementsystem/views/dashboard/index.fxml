@@ -179,7 +179,7 @@
                            </VBox.margin>
                         </Text>
                         <JFXListView />
-                        <JFXButton alignment="CENTER" prefHeight="47.0" prefWidth="207.0" style="-fx-background-color: #85BEB8;" text="View All" textFill="WHITE" VBox.vgrow="ALWAYS">
+                        <JFXButton alignment="CENTER" onAction="#viewAllBorrowedBooks" prefHeight="47.0" prefWidth="207.0" style="-fx-background-color: #85BEB8;" text="View All" textFill="WHITE" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
@@ -203,7 +203,7 @@
                            </VBox.margin>
                         </Text>
                         <JFXListView />
-                        <JFXButton alignment="CENTER" prefHeight="47.0" prefWidth="207.0" style="-fx-background-color: #85BEB8;" text="View All" textFill="WHITE" VBox.vgrow="ALWAYS">
+                        <JFXButton alignment="CENTER" onAction="#viewAllActiveBooks" prefHeight="47.0" prefWidth="207.0" style="-fx-background-color: #85BEB8;" text="View All" textFill="WHITE" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
@@ -224,7 +224,7 @@
                            </VBox.margin>
                         </Text>
                         <JFXListView />
-                        <JFXButton alignment="CENTER" prefHeight="47.0" prefWidth="207.0" style="-fx-background-color: #85BEB8;" text="View All" textFill="WHITE" VBox.vgrow="ALWAYS">
+                        <JFXButton alignment="CENTER" onAction="#viewAllOverDueBooks" prefHeight="47.0" prefWidth="207.0" style="-fx-background-color: #85BEB8;" text="View All" textFill="WHITE" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
@@ -236,7 +236,7 @@
                   </VBox>
                   <VBox prefHeight="151.0" prefWidth="247.0">
                      <children>
-                        <JFXButton prefHeight="107.0" prefWidth="264.0" style="-fx-background-color: #2895F8;" text="Borrow Book" textFill="WHITE">
+                        <JFXButton onAction="#openBorrowBookView" prefHeight="107.0" prefWidth="264.0" style="-fx-background-color: #2895F8;" text="Borrow Book" textFill="WHITE">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -251,7 +251,7 @@
                   </VBox>
                   <VBox layoutX="20.0" layoutY="360.0" prefHeight="60.0" prefWidth="247.0">
                      <children>
-                        <JFXButton prefHeight="107.0" prefWidth="264.0" style="-fx-background-color: #2895F8;" text="Return Book" textFill="WHITE">
+                        <JFXButton onAction="#openReturnBookView" prefHeight="107.0" prefWidth="264.0" style="-fx-background-color: #2895F8;" text="Return Book" textFill="WHITE">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -266,7 +266,7 @@
                   </VBox>
                   <VBox layoutX="277.0" layoutY="360.0" prefHeight="60.0" prefWidth="247.0">
                      <children>
-                        <JFXButton prefHeight="107.0" prefWidth="264.0" style="-fx-background-color: #2895F8;" text="Penalty Report" textFill="WHITE">
+                        <JFXButton onAction="#openPenaltyReportView" prefHeight="107.0" prefWidth="264.0" style="-fx-background-color: #2895F8;" text="Penalty Report" textFill="WHITE">
                            <font>
                               <Font size="20.0" />
                            </font>
