@@ -99,9 +99,14 @@ public class ManageBooksController implements Initializable {
 
     @FXML
     private JFXButton submitBtn;
+
+    @FXML
+    private JFXTextField bookBarcode;
+
     private RequiredFieldValidator isbnValidator;
     private RequiredFieldValidator bookTitleValidator;
     private RequiredFieldValidator bookAuthorValidator;
+    private RequiredFieldValidator bookBarcodeValidator;
     private ArrayList<String> errorMessages = new ArrayList<>();
     private ArrayList<IFXTextInputControl> formFields = new ArrayList<>();
     protected ContextMenu contextMenu;
@@ -183,6 +188,7 @@ public class ManageBooksController implements Initializable {
         this.bookIsbn.getValidators().add(isbnValidator);
         this.bookTitle.getValidators().add(bookTitleValidator);
         this.bookAuthor.getValidators().add(this.bookAuthorValidator);
+        this.bookBarcode.getValidators().add(this.bookBarcodeValidator);
     }
 
     private void initializeValidators() {
@@ -194,6 +200,9 @@ public class ManageBooksController implements Initializable {
         bookTitleValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
         bookAuthorValidator = new RequiredFieldValidator();
         bookAuthorValidator.setMessage("Book author is required");
+        bookBarcodeValidator = new RequiredFieldValidator();
+        bookBarcodeValidator.setMessage("Barcode identification is required");
+        bookBarcodeValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
     }
 
     private void populateAvailabilityField() {
@@ -347,6 +356,7 @@ public class ManageBooksController implements Initializable {
     private void createNewBook() {
         Books book = new Books();
         book.setIsbn(bookIsbn.getText());
+        book.setBarcodeIdentification(bookBarcode.getText());
         book.setAvailability(bookAvailability.getValue());
         book.setTitle(bookTitle.getText());
         book.setAuthor(bookAuthor.getText());
