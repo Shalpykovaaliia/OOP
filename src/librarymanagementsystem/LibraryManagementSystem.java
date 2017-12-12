@@ -56,7 +56,7 @@ public class LibraryManagementSystem extends Application {
         LibraryManagementSystem.showView("user.dashboard");
         //LibraryManagementSystem.showView("borrower.manage");
         //LibraryManagementSystem.showView("user.manage");
-        //LibraryManagementSystem.showView("book.manage");
+//        LibraryManagementSystem.showView("book.manage");
         //LibraryManagementSystem.showView("settings.manage");
         //LibraryManagementSystem.showView("user.login");
     }
@@ -107,7 +107,7 @@ public class LibraryManagementSystem extends Application {
         viewLocation.put("borrower.manage", "views/borrowers/manage_borrower.fxml");
         viewLocation.put("book.manage", "views/books/manage_books.fxml");
         viewLocation.put("book.borrow", "views/books/borrow_books.fxml");
-        viewLocation.put("book.return", "views/books/return_books.fxml");
+        viewLocation.put("book.return", "views/books/return_book.fxml");
         viewLocation.put("book.penalty", "views/books/penalty_book.fxml");
         viewLocation.put("settings.manage", "views/settings/index.fxml");
         viewLocation.put("scanner.manage", "views/scanner/index.fxml");
