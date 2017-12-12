@@ -162,8 +162,30 @@ its not updating record
 @DONE
 
 
-@TODO - dashboard put button allowing user to borrow book . 
-inputting book id and borrower .show only available book and put partial search by book name
+@TODO 
+borrow book
+    view - to be done
+    logic - to be done
+
+dashboard put button allowing user to borrow book . 
+inputting book id and borrower .
+show only available book and put partial search by book name
+
+
+@TODO 
+return book
+    view -  done
+    logic to be done
+    
+    
+
+
+@TODO  - overdued books notification . notify evertyime system boots up. 
+only once. Overdued books should have a log if it is notified via SMS or not. 
+To prevent double sending
+
+
+
 
 @TODO - after login set the CUrrent User Login object.
 
