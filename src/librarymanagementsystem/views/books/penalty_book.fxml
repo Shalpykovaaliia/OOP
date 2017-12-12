@@ -85,7 +85,7 @@
                         <Insets left="20.0" />
                      </padding>
                   </Label>
-                  <TableView prefHeight="249.0" prefWidth="197.0" GridPane.rowIndex="1">
+                  <TableView fx:id="recentlyPenalizedBorrowers" prefHeight="249.0" prefWidth="197.0" GridPane.rowIndex="1">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Name" />
                         <TableColumn prefWidth="75.0" text="Record" />
@@ -97,7 +97,7 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
-                  <TableView prefHeight="236.0" prefWidth="364.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <TableView fx:id="allPenaltyRecordTable" prefHeight="236.0" prefWidth="364.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Name" />
                       <TableColumn prefWidth="159.0" text="Book Borrowed" />
