@@ -5,6 +5,8 @@
  */
 package librarymanagementsystem.controllers;
 
+import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -17,6 +19,15 @@ import javafx.fxml.Initializable;
  * @author User
  */
 public class SettingsController implements Initializable {
+
+    @FXML
+    private JFXTextField smsApiPublicKey;
+
+    @FXML
+    private JFXTextField smsApiPrivateKey;
+
+    @FXML
+    private JFXRadioButton enableSMSNotification;
 
     /**
      * Initializes the controller class.
@@ -31,4 +42,8 @@ public class SettingsController implements Initializable {
         librarymanagementsystem.LibraryManagementSystem.back();
     }
 
+    @FXML
+    void saveSettings(ActionEvent event) {
+        // todo
+    }
 }
