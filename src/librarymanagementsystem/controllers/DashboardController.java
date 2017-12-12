@@ -124,7 +124,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     void openPenaltyReportView(ActionEvent event) {
-        LibraryManagementSystem.showView("settings.manage");
+        LibraryManagementSystem.showView("book.penalty");
     }
 
 }
