@@ -112,7 +112,7 @@
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Text>
-                                          <JFXDatePicker fx:id="returnDateField" prefHeight="25.0" prefWidth="333.0">
+                                          <JFXDatePicker fx:id="returnDateField" defaultColor="#2a98f7" prefHeight="25.0" prefWidth="333.0">
                                              <VBox.margin>
                                                 <Insets bottom="20.0" />
                                              </VBox.margin>
@@ -162,7 +162,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Text>
-                        <JFXTextField fx:id="bookBarcodeField" labelFloat="true" onAction="#searchBookByBarcode" onInputMethodTextChanged="#bookScan" prefWidth="224.0" promptText="Book ID (scan the barcode)" />
+                        <JFXTextField fx:id="bookBarcodeField" labelFloat="true" onAction="#searchBookByBarcode" onInputMethodTextChanged="#bookScan" prefWidth="224.0" promptText="Scan barcode" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Book Information" wrappingWidth="324.13671875">
                            <font>
                               <Font name="System Bold" size="15.0" />
