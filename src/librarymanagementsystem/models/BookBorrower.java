@@ -32,10 +32,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "BookBorrower.findAll", query = "SELECT b FROM BookBorrower b")
+    , @NamedQuery(name = "BookBorrower.findUnique", query = "SELECT b FROM BookBorrower b where b.dateReturned is null GROUP BY b.bookId,b.borrowerId")
     , @NamedQuery(name = "BookBorrower.findById", query = "SELECT b FROM BookBorrower b WHERE b.id = :id")
     , @NamedQuery(name = "BookBorrower.findByBookId", query = "SELECT b FROM BookBorrower b WHERE b.bookId = :bookId")
     , @NamedQuery(name = "BookBorrower.findByDateReturned", query = "SELECT b FROM BookBorrower b WHERE b.dateReturned = :dateReturned")
     , @NamedQuery(name = "BookBorrower.findByExpectedReturnDate", query = "SELECT b FROM BookBorrower b WHERE b.expectedReturnDate = :expectedReturnDate")
+    , @NamedQuery(name = "BookBorrower.hasDateReturned", query = "SELECT b FROM BookBorrower b WHERE b.borrowerId = :borrowerId and b.dateReturned is null")
+    , @NamedQuery(name = "BookBorrower.findBooksBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateReturned is null and b.borrowerId = :borrowerId group by b.bookId")
+    , @NamedQuery(name = "BookBorrower.findOverduedBook", query = "SELECT b FROM BookBorrower b where b.expectedReturnDate < CURRENT_DATE and b.dateReturned is null group by b.bookId")
     , @NamedQuery(name = "BookBorrower.findByDateBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateBorrowed = :dateBorrowed")})
 public class BookBorrower implements Serializable {
 
@@ -158,5 +162,5 @@ public class BookBorrower implements Serializable {
     public String toString() {
         return "librarymanagementsystem.models.BookBorrower[ id=" + id + " ]";
     }
-    
+
 }
