@@ -8,7 +8,6 @@ package librarymanagementsystem.controllers;
 import com.jfoenix.controls.IFXTextInputControl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.jfoenix.validation.base.ValidatorBase;
@@ -44,7 +43,6 @@ import librarymanagementsystem.beans.BookBean;
 import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.models.Books;
-import org.eclipse.persistence.config.CacheUsage;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 
@@ -294,6 +292,7 @@ public class ManageBooksController implements Initializable {
         // get all records in the database
         Query namedQuery = em.createNamedQuery("Books.findAll");
         namedQuery.setHint(QueryHints.REFRESH, HintValues.TRUE);
+        
         List<Books> books = namedQuery.getResultList();
         ObservableList<BookBean> bookCollection = FXCollections.observableArrayList();
         ObservableList<BookBean> currentBookItems = bookTable.getItems();
