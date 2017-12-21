@@ -21,21 +21,13 @@ import javafx.fxml.Initializable;
 public class SettingsController implements Initializable {
 
     @FXML
-    private JFXTextField smsApiPublicKey;
+    private JFXTextField smsApicode;
 
     @FXML
-    private JFXTextField smsApiPrivateKey;
+    private JFXTextField smsSenderName;
 
     @FXML
     private JFXRadioButton enableSMSNotification;
-
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }
 
     @FXML
     void returnBack(ActionEvent event) {
@@ -44,6 +36,12 @@ public class SettingsController implements Initializable {
 
     @FXML
     void saveSettings(ActionEvent event) {
-        // todo
+
     }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        
+    }
+
 }

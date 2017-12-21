@@ -67,12 +67,12 @@
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                        </padding>
                                     </Label>
-                                    <JFXTextField fx:id="smsApiPublicKey" labelFloat="true" promptText="SMS API Public Key">
+                                    <JFXTextField fx:id="smsApicode" labelFloat="true" promptText="SMS API Code">
                                        <padding>
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                        </padding>
                                     </JFXTextField>
-                                    <JFXTextField fx:id="smsApiPrivateKey" labelFloat="true" promptText="SMS API Private Key">
+                                    <JFXTextField fx:id="smsSenderName" labelFloat="true" layoutX="10.0" layoutY="100.0" promptText="SMS Sender Name">
                                        <padding>
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                        </padding>
