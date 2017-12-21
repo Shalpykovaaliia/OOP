@@ -93,6 +93,10 @@ public class Books implements Serializable {
     @ManyToMany
     private List<Category> categoryList;
 
+    public static String AVAILABLE_STATUS = "Available";
+    
+    public static String UNAVAILABLE_STATUS = "Unavailable";
+
     public Books() {
     }
 
