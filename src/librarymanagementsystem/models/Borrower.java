@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Borrower.findByTitle", query = "SELECT b FROM Borrower b WHERE b.title = :title")
     , @NamedQuery(name = "Borrower.findByFirstname", query = "SELECT b FROM Borrower b WHERE b.firstname = :firstname")
     , @NamedQuery(name = "Borrower.findByLastname", query = "SELECT b FROM Borrower b WHERE b.lastname = :lastname")
+    , @NamedQuery(name = "Borrower.findByFullname", query = "SELECT b FROM Borrower b WHERE concat(b.title,' ',b.firstname,' ',b.lastname) = :fullName")
     , @NamedQuery(name = "Borrower.findByBirthday", query = "SELECT b FROM Borrower b WHERE b.birthday = :birthday")
     , @NamedQuery(name = "Borrower.findByGender", query = "SELECT b FROM Borrower b WHERE b.gender = :gender")
     , @NamedQuery(name = "Borrower.findByAddress1", query = "SELECT b FROM Borrower b WHERE b.address1 = :address1")
