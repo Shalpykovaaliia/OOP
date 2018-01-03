@@ -25,7 +25,6 @@ import javafx.stage.StageStyle;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import librarymanagementsystem.components.ClickSendSMSSender;
 import librarymanagementsystem.components.OverdueRecordReport;
 import librarymanagementsystem.components.SemaphoreSMSSender;
 import librarymanagementsystem.components.SettingsRetriever;
