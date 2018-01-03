@@ -225,6 +225,15 @@ it should show "This borrower didnt borrow any books or has returned the books h
 
 @TODO - LibraryManagementSystem.java - continue the line with @TODO
 
+@TODO - on load of librarymanagement system class . 
+check setting is present. if not yet there . create the setting 
+if setting record is there . dont update
+
+@TODO - SMS_API_CODE
+
+@TODO - SMS_SENDER_NAME
+
+@TODO - NOTIFICATION_STATUS  [enabled,disabled]
 
 @TODO  - overdued books notification . notify evertyime system boots up. 
 only once. Overdued books should have a log if it is notified via SMS or not. 
