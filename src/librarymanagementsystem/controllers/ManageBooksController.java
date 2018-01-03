@@ -8,7 +8,6 @@ package librarymanagementsystem.controllers;
 import com.jfoenix.controls.IFXTextInputControl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.jfoenix.validation.base.ValidatorBase;
@@ -44,7 +43,6 @@ import librarymanagementsystem.beans.BookBean;
 import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.models.Books;
-import org.eclipse.persistence.config.CacheUsage;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 
@@ -99,9 +97,14 @@ public class ManageBooksController implements Initializable {
 
     @FXML
     private JFXButton submitBtn;
+
+    @FXML
+    private JFXTextField bookBarcode;
+
     private RequiredFieldValidator isbnValidator;
     private RequiredFieldValidator bookTitleValidator;
     private RequiredFieldValidator bookAuthorValidator;
+    private RequiredFieldValidator bookBarcodeValidator;
     private ArrayList<String> errorMessages = new ArrayList<>();
     private ArrayList<IFXTextInputControl> formFields = new ArrayList<>();
     protected ContextMenu contextMenu;
@@ -183,6 +186,7 @@ public class ManageBooksController implements Initializable {
         this.bookIsbn.getValidators().add(isbnValidator);
         this.bookTitle.getValidators().add(bookTitleValidator);
         this.bookAuthor.getValidators().add(this.bookAuthorValidator);
+        this.bookBarcode.getValidators().add(this.bookBarcodeValidator);
     }
 
     private void initializeValidators() {
@@ -194,6 +198,9 @@ public class ManageBooksController implements Initializable {
         bookTitleValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
         bookAuthorValidator = new RequiredFieldValidator();
         bookAuthorValidator.setMessage("Book author is required");
+        bookBarcodeValidator = new RequiredFieldValidator();
+        bookBarcodeValidator.setMessage("Barcode identification is required");
+        bookBarcodeValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
     }
 
     private void populateAvailabilityField() {
@@ -285,6 +292,7 @@ public class ManageBooksController implements Initializable {
         // get all records in the database
         Query namedQuery = em.createNamedQuery("Books.findAll");
         namedQuery.setHint(QueryHints.REFRESH, HintValues.TRUE);
+        
         List<Books> books = namedQuery.getResultList();
         ObservableList<BookBean> bookCollection = FXCollections.observableArrayList();
         ObservableList<BookBean> currentBookItems = bookTable.getItems();
@@ -347,6 +355,7 @@ public class ManageBooksController implements Initializable {
     private void createNewBook() {
         Books book = new Books();
         book.setIsbn(bookIsbn.getText());
+        book.setBarcodeIdentification(bookBarcode.getText());
         book.setAvailability(bookAvailability.getValue());
         book.setTitle(bookTitle.getText());
         book.setAuthor(bookAuthor.getText());

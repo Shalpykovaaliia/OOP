@@ -3,7 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/G:/Java%20Fx%20Projects/LibraryManagementSystem/src/librarymanagementsystem/LibraryManagementSystem.java</file>
             <file>file:/G:/Java%20Fx%20Projects/LibraryManagementSystem/src/README.md</file>
+            <file>file:/G:/Java%20Fx%20Projects/LibraryManagementSystem/src/librarymanagementsystem/components/SettingsRetriever.java</file>
+            <file>file:/G:/Java%20Fx%20Projects/LibraryManagementSystem/src/librarymanagementsystem/exceptions/FailedToSendSMSException.java</file>
+            <file>file:/G:/Java%20Fx%20Projects/LibraryManagementSystem/src/librarymanagementsystem/controllers/SettingsController.java</file>
         </group>
     </open-files>
 </project-private>

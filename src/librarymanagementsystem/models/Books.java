@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Books.findAll", query = "SELECT b FROM Books b")
     , @NamedQuery(name = "Books.findByBookId", query = "SELECT b FROM Books b WHERE b.bookId = :bookId")
     , @NamedQuery(name = "Books.findByIsbn", query = "SELECT b FROM Books b WHERE b.isbn = :isbn")
+    , @NamedQuery(name = "Books.findByBarcode", query = "SELECT b FROM Books b WHERE b.barcodeIdentification = :barcode")
     , @NamedQuery(name = "Books.findByAvailability", query = "SELECT b FROM Books b WHERE b.availability = :availability")
     , @NamedQuery(name = "Books.findByTitle", query = "SELECT b FROM Books b WHERE b.title = :title")
     , @NamedQuery(name = "Books.findByAuthor", query = "SELECT b FROM Books b WHERE b.author = :author")
@@ -56,6 +57,9 @@ public class Books implements Serializable {
     @Basic(optional = false)
     @Column(name = "ISBN")
     private String isbn;
+    @Basic(optional = true)
+    @Column(name = "barcode_identification")
+    private String barcodeIdentification;
     @Basic(optional = false)
     @Column(name = "availability")
     private String availability;
@@ -89,6 +93,10 @@ public class Books implements Serializable {
     @ManyToMany
     private List<Category> categoryList;
 
+    public static String AVAILABLE_STATUS = "Available";
+    
+    public static String UNAVAILABLE_STATUS = "Unavailable";
+
     public Books() {
     }
 
@@ -96,9 +104,10 @@ public class Books implements Serializable {
         this.bookId = bookId;
     }
 
-    public Books(Integer bookId, String isbn, String availability, String title, String author, String description, String edition, String editionYear, Date dateCreated, Date dateUpdated) {
+    public Books(Integer bookId, String isbn, String barcodeIdentification, String availability, String title, String author, String description, String edition, String editionYear, Date dateCreated, Date dateUpdated) {
         this.bookId = bookId;
         this.isbn = isbn;
+        this.barcodeIdentification = barcodeIdentification;
         this.availability = availability;
         this.title = title;
         this.author = author;
@@ -123,6 +132,14 @@ public class Books implements Serializable {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
+    }
+
+    public String getBarcodeIdentification() {
+        return barcodeIdentification;
+    }
+
+    public void setBarcodeIdentification(String barcodeIdentification) {
+        this.barcodeIdentification = barcodeIdentification;
     }
 
     public String getAvailability() {
@@ -222,5 +239,5 @@ public class Books implements Serializable {
     public String toString() {
         return "librarymanagementsystem.models.Books[ bookId=" + bookId + " ]";
     }
-    
+
 }
