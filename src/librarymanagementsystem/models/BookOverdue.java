@@ -32,17 +32,17 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "BookOverdue.findByComputedFee", query = "SELECT b FROM BookOverdue b WHERE b.computedFee = :computedFee")
     , @NamedQuery(name = "BookOverdue.findByPaid", query = "SELECT b FROM BookOverdue b WHERE b.paid = :paid")
     , @NamedQuery(name = "BookOverdue.findByBalance", query = "SELECT b FROM BookOverdue b WHERE b.balance = :balance")
+    , @NamedQuery(name = "BookOverdue.findOverduedBooks", query = "SELECT b FROM BookOverdue b WHERE b.paid is null")
+    , @NamedQuery(name = "BookOverdue.hasOverDueRecord", query = "SELECT b FROM BookOverdue b WHERE b.bookBorrowerRefId = :bookBorrowerId")
+    , @NamedQuery(name = "BookOverdue.findByBookBorrower", query = "SELECT b FROM BookOverdue b WHERE b.bookBorrowerRefId = :bookBorrowerId")
     , @NamedQuery(name = "BookOverdue.findById", query = "SELECT b FROM BookOverdue b WHERE b.id = :id")})
 public class BookOverdue implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Basic(optional = false)
     @Column(name = "computed_fee")
     private float computedFee;
-    @Basic(optional = false)
     @Column(name = "paid")
     private float paid;
-    @Basic(optional = false)
     @Column(name = "balance")
     private float balance;
     @Basic(optional = false)

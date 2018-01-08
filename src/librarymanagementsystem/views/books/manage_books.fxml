@@ -15,7 +15,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="374.0" prefWidth="1118.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="librarymanagementsystem.controllers.ManageBooksController">
    <children>
-      <BorderPane layoutX="38.0" prefHeight="722.0" prefWidth="1118.0" AnchorPane.bottomAnchor="-122.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane layoutX="38.0" prefHeight="722.0" prefWidth="1118.0" AnchorPane.bottomAnchor="-62.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <AnchorPane prefHeight="84.0" prefWidth="854.0" style="-fx-background-color: #2895F8;" BorderPane.alignment="CENTER">
                <children>
@@ -55,7 +55,7 @@
          <center>
             <VBox prefHeight="396.0" prefWidth="793.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
                <children>
-                  <TableView fx:id="bookTable" prefHeight="475.0" prefWidth="753.0">
+                  <TableView fx:id="bookTable" prefHeight="527.0" prefWidth="753.0">
                     <columns>
                       <TableColumn fx:id="isbnColumn" prefWidth="75.0" text="ISBN" />
                       <TableColumn fx:id="bookTitleColumn" prefWidth="75.0" text="Title" />
@@ -81,7 +81,8 @@
                            <children>
                               <Label text="Book Information" />
                               <JFXTextField fx:id="bookIsbn" promptText="ISBN" />
-                              <JFXComboBox fx:id="bookAvailability" labelFloat="true" prefHeight="25.0" prefWidth="303.0" promptText="Availability" />
+                              <JFXTextField fx:id="bookBarcode" promptText="Barcode" />
+                              <JFXComboBox fx:id="bookAvailability" prefHeight="25.0" prefWidth="303.0" promptText="Availability" />
                               <JFXTextField fx:id="bookTitle" promptText="Title" />
                               <JFXTextField fx:id="bookAuthor" promptText="Author" />
                               <JFXTextField fx:id="bookDescription" promptText="Description" />

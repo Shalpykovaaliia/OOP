@@ -161,6 +161,130 @@ bug on after updating the record . the list should contain the update records.
 its not updating record
 @DONE
 
+
+
+@TODO 
+borrow book
+    view - done
+    logic -done
+@TODO - after borrow , the status of book should be unavailable
+@DONE
+
+@TODO - show all borrowed books
+@DONE
+
+@TODO - show all borrowers
+@DONE
+
+@TODO
+dashboard put button allowing user to borrow book . 
+@DONE
+
+@TODO 
+return book
+    view -  @DONE
+    logic  - 
+
+
+
+@TODO  - expected return date is not set 
+@DONE    
+
+@TODO - after login set the CUrrent User Login object.
+@DONE
+
+@TODO - on dashboard open . load the current username and its role.
+@DONE
+
+
+@TODO - not created Over Due record after returning the book
+@DONE
+
+
+@TODO - book overdue will only be created  after paying the fee or after returning the book
+@DONE
+
+
+@TODo - when returning book. no overdue record is created
+@DONE
+
+@TODO - overdue record is still created even if there book is not overdue
+@DONE
+
+
+@TODO - show overdue day of a book instead of edition
+@DONE
+
+@TODO - after returniong the books . and searching the name of the borrower . 
+it should show "This borrower didnt borrow any books or has returned the books he/she borrowed.";
+@DONE
+
+
+@TODO - when borrowing books. nadodoble yung last na bookborrow na record
+@DONE
+
+
+
+@DONE
+@TODO - on load of librarymanagement system class . 
+check setting is present. if not yet there . create the setting 
+if setting record is there . dont update - @DONE
+@TODO - SMS_API_CODE - @DONE
+@TODO - SMS_SENDER_NAME- @DONE
+@TODO - NOTIFICATION_STATUS  [enabled,disabled] - @DONE
+
+@TODO  - create table log for sending sms to prevent double sending.
+tbl_sms_notification_log
+id
+book_borrower_id
+status
+date_sent
+@DONE
+
+@TODO - LibraryManagementSystem.java - continue the line with 
+@TODO
+
+@TODO  - overdued books notification . notify evertyime system boots up. 
+only once. Overdued books should have a log if it is notified via SMS or not. 
+To prevent double sending
+there should be a log that will log borrowers id and book id .
+and has a status of sent or not . and the date the notifiction is sent
+@DONE
+
+@TODO - LibraryManagement line 80
+@DONE
+
+@TODO - transfer the logic into thread. 
+make the thread run every minute
+@DONE
+
+@TODO - fix thread issue in LibraryManagement like 79
+@DONE
+
+@TODO - test settings update panel
+@DONE
+
+@TODO - panel to see sms notification logs
+
+
+=====================
+NICE Things to Have
+=====================
+@TODO - allow user to print barcode image . put toolbox button that when clicked it prints all barcode image of books
+
+@TODO - a button that opens list of books and their availability. allow user to search partial/filter by book name 
+
+
+@TODO - dasboard button that opens return book panel
+
+@TODO - thread that will overdue books and then invoke system notification showing "an overdue book is detected" or something like that
+      - attach SMS notifier
+
+
+@TODO - Settings panel that reports number of sms credits left.
+
 Nice things to have
 
 @TODO - detect database configuration. allow user to set database configuration
+
+

@@ -6,8 +6,8 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,12 +36,19 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "BookBorrower.findAll", query = "SELECT b FROM BookBorrower b")
+    , @NamedQuery(name = "BookBorrower.findUnique", query = "SELECT b FROM BookBorrower b where b.dateReturned is null GROUP BY b.bookId,b.borrowerId")
     , @NamedQuery(name = "BookBorrower.findById", query = "SELECT b FROM BookBorrower b WHERE b.id = :id")
     , @NamedQuery(name = "BookBorrower.findByBookId", query = "SELECT b FROM BookBorrower b WHERE b.bookId = :bookId")
     , @NamedQuery(name = "BookBorrower.findByDateReturned", query = "SELECT b FROM BookBorrower b WHERE b.dateReturned = :dateReturned")
     , @NamedQuery(name = "BookBorrower.findByExpectedReturnDate", query = "SELECT b FROM BookBorrower b WHERE b.expectedReturnDate = :expectedReturnDate")
+    , @NamedQuery(name = "BookBorrower.hasDateReturned", query = "SELECT b FROM BookBorrower b WHERE b.borrowerId = :borrowerId and b.dateReturned is null")
+    , @NamedQuery(name = "BookBorrower.findBooksBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateReturned is null and b.borrowerId = :borrowerId group by b.bookId")
+    , @NamedQuery(name = "BookBorrower.findOverduedBook", query = "SELECT b FROM BookBorrower b where b.expectedReturnDate < CURRENT_DATE and b.dateReturned is null group by b.bookId")
     , @NamedQuery(name = "BookBorrower.findByDateBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateBorrowed = :dateBorrowed")})
 public class BookBorrower implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookBorrowerId")
+    private Collection<SmsNotificationLog> smsNotificationLogCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -52,15 +59,12 @@ public class BookBorrower implements Serializable {
     @Basic(optional = false)
     @Column(name = "book_id")
     private int bookId;
-    @Basic(optional = false)
     @Column(name = "date_returned")
     @Temporal(TemporalType.DATE)
     private Date dateReturned;
-    @Basic(optional = false)
     @Column(name = "expected_return_date")
     @Temporal(TemporalType.DATE)
     private Date expectedReturnDate;
-    @Basic(optional = false)
     @Column(name = "date_borrowed")
     @Temporal(TemporalType.DATE)
     private Date dateBorrowed;
@@ -68,13 +72,9 @@ public class BookBorrower implements Serializable {
     @Lob
     @Column(name = "notes")
     private String notes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookBorrowerRefId")
-    private List<BookOverdue> bookOverdueList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "borrowerId")
-    private List<BookBorrower> bookBorrowerList;
-    @JoinColumn(name = "borrower_id", referencedColumnName = "id")
+    @JoinColumn(name = "borrower_id", referencedColumnName = "borrower_id")
     @ManyToOne(optional = false)
-    private BookBorrower borrowerId;
+    private Borrower borrowerId;
 
     public BookBorrower() {
     }
@@ -83,12 +83,9 @@ public class BookBorrower implements Serializable {
         this.id = id;
     }
 
-    public BookBorrower(Integer id, int bookId, Date dateReturned, Date expectedReturnDate, Date dateBorrowed, String notes) {
+    public BookBorrower(Integer id, int bookId, String notes) {
         this.id = id;
         this.bookId = bookId;
-        this.dateReturned = dateReturned;
-        this.expectedReturnDate = expectedReturnDate;
-        this.dateBorrowed = dateBorrowed;
         this.notes = notes;
     }
 
@@ -140,29 +137,11 @@ public class BookBorrower implements Serializable {
         this.notes = notes;
     }
 
-    @XmlTransient
-    public List<BookOverdue> getBookOverdueList() {
-        return bookOverdueList;
-    }
-
-    public void setBookOverdueList(List<BookOverdue> bookOverdueList) {
-        this.bookOverdueList = bookOverdueList;
-    }
-
-    @XmlTransient
-    public List<BookBorrower> getBookBorrowerList() {
-        return bookBorrowerList;
-    }
-
-    public void setBookBorrowerList(List<BookBorrower> bookBorrowerList) {
-        this.bookBorrowerList = bookBorrowerList;
-    }
-
-    public BookBorrower getBorrowerId() {
+    public Borrower getBorrowerId() {
         return borrowerId;
     }
 
-    public void setBorrowerId(BookBorrower borrowerId) {
+    public void setBorrowerId(Borrower borrowerId) {
         this.borrowerId = borrowerId;
     }
 
@@ -190,5 +169,14 @@ public class BookBorrower implements Serializable {
     public String toString() {
         return "librarymanagementsystem.models.BookBorrower[ id=" + id + " ]";
     }
-    
+
+    @XmlTransient
+    public Collection<SmsNotificationLog> getSmsNotificationLogCollection() {
+        return smsNotificationLogCollection;
+    }
+
+    public void setSmsNotificationLogCollection(Collection<SmsNotificationLog> smsNotificationLogCollection) {
+        this.smsNotificationLogCollection = smsNotificationLogCollection;
+    }
+
 }

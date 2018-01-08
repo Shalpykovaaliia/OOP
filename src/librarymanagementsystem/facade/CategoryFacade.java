@@ -22,9 +22,9 @@ import librarymanagementsystem.models.Category;
  *
  * @author User
  */
-public class CategoryJpaController implements Serializable {
+public class CategoryFacade implements Serializable {
 
-    public CategoryJpaController(EntityManagerFactory emf) {
+    public CategoryFacade(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;

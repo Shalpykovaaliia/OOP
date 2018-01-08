@@ -14,15 +14,15 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
-import librarymanagementsystem.models.BookOverdue;
+import librarymanagementsystem.models.Borrower;
 
 /**
  *
  * @author User
  */
-public class BookOverdueJpaController implements Serializable {
+public class BorrowerFacade implements Serializable {
 
-    public BookOverdueJpaController(EntityManagerFactory emf) {
+    public BorrowerFacade(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -31,12 +31,12 @@ public class BookOverdueJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(BookOverdue bookOverdue) {
+    public void create(Borrower borrower) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(bookOverdue);
+            em.persist(borrower);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -45,19 +45,19 @@ public class BookOverdueJpaController implements Serializable {
         }
     }
 
-    public void edit(BookOverdue bookOverdue) throws NonexistentEntityException, Exception {
+    public void edit(Borrower borrower) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            bookOverdue = em.merge(bookOverdue);
+            borrower = em.merge(borrower);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = bookOverdue.getId();
-                if (findBookOverdue(id) == null) {
-                    throw new NonexistentEntityException("The bookOverdue with id " + id + " no longer exists.");
+                Integer id = borrower.getBorrowerId();
+                if (findBorrower(id) == null) {
+                    throw new NonexistentEntityException("The borrower with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -73,14 +73,14 @@ public class BookOverdueJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            BookOverdue bookOverdue;
+            Borrower borrower;
             try {
-                bookOverdue = em.getReference(BookOverdue.class, id);
-                bookOverdue.getId();
+                borrower = em.getReference(Borrower.class, id);
+                borrower.getBorrowerId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The bookOverdue with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The borrower with id " + id + " no longer exists.", enfe);
             }
-            em.remove(bookOverdue);
+            em.remove(borrower);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -89,19 +89,19 @@ public class BookOverdueJpaController implements Serializable {
         }
     }
 
-    public List<BookOverdue> findBookOverdueEntities() {
-        return findBookOverdueEntities(true, -1, -1);
+    public List<Borrower> findBorrowerEntities() {
+        return findBorrowerEntities(true, -1, -1);
     }
 
-    public List<BookOverdue> findBookOverdueEntities(int maxResults, int firstResult) {
-        return findBookOverdueEntities(false, maxResults, firstResult);
+    public List<Borrower> findBorrowerEntities(int maxResults, int firstResult) {
+        return findBorrowerEntities(false, maxResults, firstResult);
     }
 
-    private List<BookOverdue> findBookOverdueEntities(boolean all, int maxResults, int firstResult) {
+    private List<Borrower> findBorrowerEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(BookOverdue.class));
+            cq.select(cq.from(Borrower.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -113,20 +113,20 @@ public class BookOverdueJpaController implements Serializable {
         }
     }
 
-    public BookOverdue findBookOverdue(Integer id) {
+    public Borrower findBorrower(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(BookOverdue.class, id);
+            return em.find(Borrower.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getBookOverdueCount() {
+    public int getBorrowerCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<BookOverdue> rt = cq.from(BookOverdue.class);
+            Root<Borrower> rt = cq.from(Borrower.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

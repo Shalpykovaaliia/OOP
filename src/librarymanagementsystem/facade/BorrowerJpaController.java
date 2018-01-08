@@ -6,13 +6,17 @@
 package librarymanagementsystem.facade;
 
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import librarymanagementsystem.models.BookBorrower;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import librarymanagementsystem.facade.exceptions.IllegalOrphanException;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.models.Borrower;
 
@@ -32,11 +36,29 @@ public class BorrowerJpaController implements Serializable {
     }
 
     public void create(Borrower borrower) {
+        if (borrower.getBookBorrowerCollection() == null) {
+            borrower.setBookBorrowerCollection(new ArrayList<BookBorrower>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Collection<BookBorrower> attachedBookBorrowerCollection = new ArrayList<BookBorrower>();
+            for (BookBorrower bookBorrowerCollectionBookBorrowerToAttach : borrower.getBookBorrowerCollection()) {
+                bookBorrowerCollectionBookBorrowerToAttach = em.getReference(bookBorrowerCollectionBookBorrowerToAttach.getClass(), bookBorrowerCollectionBookBorrowerToAttach.getId());
+                attachedBookBorrowerCollection.add(bookBorrowerCollectionBookBorrowerToAttach);
+            }
+            borrower.setBookBorrowerCollection(attachedBookBorrowerCollection);
             em.persist(borrower);
+            for (BookBorrower bookBorrowerCollectionBookBorrower : borrower.getBookBorrowerCollection()) {
+                Borrower oldBorrowerIdOfBookBorrowerCollectionBookBorrower = bookBorrowerCollectionBookBorrower.getBorrowerId();
+                bookBorrowerCollectionBookBorrower.setBorrowerId(borrower);
+                bookBorrowerCollectionBookBorrower = em.merge(bookBorrowerCollectionBookBorrower);
+                if (oldBorrowerIdOfBookBorrowerCollectionBookBorrower != null) {
+                    oldBorrowerIdOfBookBorrowerCollectionBookBorrower.getBookBorrowerCollection().remove(bookBorrowerCollectionBookBorrower);
+                    oldBorrowerIdOfBookBorrowerCollectionBookBorrower = em.merge(oldBorrowerIdOfBookBorrowerCollectionBookBorrower);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -45,12 +67,45 @@ public class BorrowerJpaController implements Serializable {
         }
     }
 
-    public void edit(Borrower borrower) throws NonexistentEntityException, Exception {
+    public void edit(Borrower borrower) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Borrower persistentBorrower = em.find(Borrower.class, borrower.getBorrowerId());
+            Collection<BookBorrower> bookBorrowerCollectionOld = persistentBorrower.getBookBorrowerCollection();
+            Collection<BookBorrower> bookBorrowerCollectionNew = borrower.getBookBorrowerCollection();
+            List<String> illegalOrphanMessages = null;
+            for (BookBorrower bookBorrowerCollectionOldBookBorrower : bookBorrowerCollectionOld) {
+                if (!bookBorrowerCollectionNew.contains(bookBorrowerCollectionOldBookBorrower)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain BookBorrower " + bookBorrowerCollectionOldBookBorrower + " since its borrowerId field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Collection<BookBorrower> attachedBookBorrowerCollectionNew = new ArrayList<BookBorrower>();
+            for (BookBorrower bookBorrowerCollectionNewBookBorrowerToAttach : bookBorrowerCollectionNew) {
+                bookBorrowerCollectionNewBookBorrowerToAttach = em.getReference(bookBorrowerCollectionNewBookBorrowerToAttach.getClass(), bookBorrowerCollectionNewBookBorrowerToAttach.getId());
+                attachedBookBorrowerCollectionNew.add(bookBorrowerCollectionNewBookBorrowerToAttach);
+            }
+            bookBorrowerCollectionNew = attachedBookBorrowerCollectionNew;
+            borrower.setBookBorrowerCollection(bookBorrowerCollectionNew);
             borrower = em.merge(borrower);
+            for (BookBorrower bookBorrowerCollectionNewBookBorrower : bookBorrowerCollectionNew) {
+                if (!bookBorrowerCollectionOld.contains(bookBorrowerCollectionNewBookBorrower)) {
+                    Borrower oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower = bookBorrowerCollectionNewBookBorrower.getBorrowerId();
+                    bookBorrowerCollectionNewBookBorrower.setBorrowerId(borrower);
+                    bookBorrowerCollectionNewBookBorrower = em.merge(bookBorrowerCollectionNewBookBorrower);
+                    if (oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower != null && !oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower.equals(borrower)) {
+                        oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower.getBookBorrowerCollection().remove(bookBorrowerCollectionNewBookBorrower);
+                        oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower = em.merge(oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower);
+                    }
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -68,7 +123,7 @@ public class BorrowerJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -79,6 +134,17 @@ public class BorrowerJpaController implements Serializable {
                 borrower.getBorrowerId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The borrower with id " + id + " no longer exists.", enfe);
+            }
+            List<String> illegalOrphanMessages = null;
+            Collection<BookBorrower> bookBorrowerCollectionOrphanCheck = borrower.getBookBorrowerCollection();
+            for (BookBorrower bookBorrowerCollectionOrphanCheckBookBorrower : bookBorrowerCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Borrower (" + borrower + ") cannot be destroyed since the BookBorrower " + bookBorrowerCollectionOrphanCheckBookBorrower + " in its bookBorrowerCollection field has a non-nullable borrowerId field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(borrower);
             em.getTransaction().commit();

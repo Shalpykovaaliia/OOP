@@ -6,8 +6,10 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,10 +17,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Borrower.findByTitle", query = "SELECT b FROM Borrower b WHERE b.title = :title")
     , @NamedQuery(name = "Borrower.findByFirstname", query = "SELECT b FROM Borrower b WHERE b.firstname = :firstname")
     , @NamedQuery(name = "Borrower.findByLastname", query = "SELECT b FROM Borrower b WHERE b.lastname = :lastname")
+    , @NamedQuery(name = "Borrower.findByFullname", query = "SELECT b FROM Borrower b WHERE concat(b.title,' ',b.firstname,' ',b.lastname) = :fullName")
     , @NamedQuery(name = "Borrower.findByBirthday", query = "SELECT b FROM Borrower b WHERE b.birthday = :birthday")
     , @NamedQuery(name = "Borrower.findByGender", query = "SELECT b FROM Borrower b WHERE b.gender = :gender")
     , @NamedQuery(name = "Borrower.findByAddress1", query = "SELECT b FROM Borrower b WHERE b.address1 = :address1")
@@ -60,37 +65,29 @@ public class Borrower implements Serializable {
     @Basic(optional = false)
     @Column(name = "lastname")
     private String lastname;
-    @Basic(optional = false)
     @Column(name = "birthday")
     @Temporal(TemporalType.DATE)
     private Date birthday;
-    @Basic(optional = false)
     @Column(name = "gender")
     private String gender;
-    @Basic(optional = false)
-    @Column(name = "address 1")
+    @Column(name = "address1")
     private String address1;
-    @Basic(optional = false)
-    @Column(name = "address 2")
+    @Column(name = "address2")
     private String address2;
-    @Basic(optional = false)
-    @Column(name = "address 3")
+    @Column(name = "address3")
     private String address3;
-    @Basic(optional = false)
     @Column(name = "postal_code")
     private String postalCode;
-    @Basic(optional = false)
     @Column(name = "town")
     private String town;
-    @Basic(optional = false)
-    @Column(name = "country")
+    @Column(name = "country", columnDefinition = "varchar(255) default 'Philippines'")
     private String country;
-    @Basic(optional = false)
     @Column(name = "mobile_number")
     private String mobileNumber;
-    @Basic(optional = false)
     @Column(name = "email_address")
     private String emailAddress;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "borrowerId")
+    private Collection<BookBorrower> bookBorrowerCollection;
 
     public Borrower() {
     }
@@ -99,21 +96,11 @@ public class Borrower implements Serializable {
         this.borrowerId = borrowerId;
     }
 
-    public Borrower(Integer borrowerId, String title, String firstname, String lastname, Date birthday, String gender, String address1, String address2, String address3, String postalCode, String town, String country, String mobileNumber, String emailAddress) {
+    public Borrower(Integer borrowerId, String title, String firstname, String lastname) {
         this.borrowerId = borrowerId;
         this.title = title;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.birthday = birthday;
-        this.gender = gender;
-        this.address1 = address1;
-        this.address2 = address2;
-        this.address3 = address3;
-        this.postalCode = postalCode;
-        this.town = town;
-        this.country = country;
-        this.mobileNumber = mobileNumber;
-        this.emailAddress = emailAddress;
     }
 
     public Integer getBorrowerId() {
@@ -228,6 +215,15 @@ public class Borrower implements Serializable {
         this.emailAddress = emailAddress;
     }
 
+    @XmlTransient
+    public Collection<BookBorrower> getBookBorrowerCollection() {
+        return bookBorrowerCollection;
+    }
+
+    public void setBookBorrowerCollection(Collection<BookBorrower> bookBorrowerCollection) {
+        this.bookBorrowerCollection = bookBorrowerCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -252,5 +248,5 @@ public class Borrower implements Serializable {
     public String toString() {
         return "librarymanagementsystem.models.Borrower[ borrowerId=" + borrowerId + " ]";
     }
-    
+
 }

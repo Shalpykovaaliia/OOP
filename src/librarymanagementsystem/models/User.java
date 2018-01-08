@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id")
     , @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
     , @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")
+    , @NamedQuery(name = "User.findByUsernamePassword", query = "SELECT u FROM User u WHERE u.username = :username and u.password = :password")
     , @NamedQuery(name = "User.findByFirstSecretQuestion", query = "SELECT u FROM User u WHERE u.firstSecretQuestion = :firstSecretQuestion")
     , @NamedQuery(name = "User.findByFirstSecretAnswer", query = "SELECT u FROM User u WHERE u.firstSecretAnswer = :firstSecretAnswer")
     , @NamedQuery(name = "User.findBySecondSecretQuestion", query = "SELECT u FROM User u WHERE u.secondSecretQuestion = :secondSecretQuestion")
@@ -120,6 +121,10 @@ public class User implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    public String getFullName(){
+        return this.profile.getFirstname()+" "+this.profile.getLastname();
+     }
 
     public String getFirstSecretQuestion() {
         return firstSecretQuestion;

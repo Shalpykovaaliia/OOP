@@ -51,8 +51,8 @@ import javax.persistence.Query;
 import javax.swing.JTextField;
 import librarymanagementsystem.beans.UserBean;
 import librarymanagementsystem.components.Sha1Hash;
-import librarymanagementsystem.facade.ProfileJpaController;
-import librarymanagementsystem.facade.UserJpaController;
+import librarymanagementsystem.facade.ProfileFacade;
+import librarymanagementsystem.facade.UserFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.models.Profile;
 import librarymanagementsystem.models.User;
@@ -113,8 +113,8 @@ public class ManageUserController implements Initializable {
 
     protected ContextMenu contextMenu;
 
-    private UserJpaController userFacade;
-    private ProfileJpaController profileFacade;
+    private UserFacade userFacade;
+    private ProfileFacade profileFacade;
 
     private RequiredFieldValidator fieldValidator;
 
@@ -194,8 +194,8 @@ public class ManageUserController implements Initializable {
         this.em = emf.createEntityManager();
 
         //load security question security question
-        this.userFacade = new UserJpaController(emf);
-        this.profileFacade = new ProfileJpaController(emf);
+        this.userFacade = new UserFacade(emf);
+        this.profileFacade = new ProfileFacade(emf);
 
         initializeValidators();
 
@@ -220,7 +220,7 @@ public class ManageUserController implements Initializable {
     }
 
     @FXML
-    void submitRecord(ActionEvent event) {
+    void submitRecord(ActionEvent event) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         System.out.println("Submitting record");
         this.errorMessages.clear();
 
@@ -361,10 +361,11 @@ public class ManageUserController implements Initializable {
 
     }
 
-    private void updateRecord() {
+    private void updateRecord() throws NoSuchAlgorithmException, UnsupportedEncodingException {
         this.currentUser.setUsername(usernameTextField.getText());
         if (!this.passwordField.getText().equals("") && !retypePasswordField.getText().equals("")) {
-            this.currentUser.setPassword(passwordField.getText());
+            String hashedPassword = Sha1Hash.SHA1(passwordField.getText());
+            this.currentUser.setPassword(hashedPassword);
         }
 
         // update security question
@@ -380,6 +381,7 @@ public class ManageUserController implements Initializable {
         // add the profile
         this.currentUser.setProfile(currentUserProfile);
         try {
+            this.profileFacade.edit(currentUserProfile);
             this.userFacade.edit(currentUser);
             Alert success = new Alert(Alert.AlertType.INFORMATION);
             success.setTitle("Record Updated");
@@ -392,6 +394,7 @@ public class ManageUserController implements Initializable {
             errorInformation.showAndWait();
             Logger.getLogger(ManageUserController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.loadListOfUsers();
         this.clearFields();
         this.currentUser = null;
     }
@@ -411,28 +414,29 @@ public class ManageUserController implements Initializable {
         namedQuery.setHint(QueryHints.REFRESH, HintValues.TRUE);
         List<User> users = namedQuery.getResultList();
         ObservableList<UserBean> userData = FXCollections.observableArrayList();
+        ObservableList<UserBean> userItems = systemUserTable.getItems();
+        userItems.clear();
         for (Iterator<User> iterator = users.iterator(); iterator.hasNext();) {
             User curUser = iterator.next();
             UserBean userBean = new UserBean();
-            ArrayList<Profile> profileCollection;
             userBean.setUsername(new SimpleStringProperty(curUser.getUsername()));
             userBean.setRole(new SimpleStringProperty(curUser.getRole()));
             userBean.setId(new SimpleIntegerProperty(curUser.getId()));
             if (curUser.getProfile() != null) {
                 Profile currentUserProfile = curUser.getProfile();
+                //get updated profile 
+                Profile updatedProfile = this.profileFacade.findProfile(currentUserProfile.getProfileId());
                 StringBuilder ownerNameBuilder = new StringBuilder();
                 ownerNameBuilder
-                        .append(currentUserProfile.getFirstname())
+                        .append(updatedProfile.getFirstname())
                         .append(" ")
-                        .append(currentUserProfile.getLastname());
+                        .append(updatedProfile.getLastname());
                 userBean.setOwnerName(new SimpleStringProperty(ownerNameBuilder.toString()));
             } else {
                 userBean.setOwnerName(new SimpleStringProperty(""));
             }
             userData.add(userBean);
         }
-        ObservableList<UserBean> userItems = systemUserTable.getItems();
-        userItems.clear();
         userItems.addAll(userData);
     }
 

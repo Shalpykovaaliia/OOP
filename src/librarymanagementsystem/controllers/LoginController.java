@@ -6,7 +6,6 @@
 package librarymanagementsystem.controllers;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
@@ -26,16 +25,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import librarymanagementsystem.LibraryManagementSystem;
-import librarymanagementsystem.components.JFXErrorDialogFactory;
 import librarymanagementsystem.components.Sha1Hash;
 import librarymanagementsystem.components.UserAuthenticator;
-import librarymanagementsystem.exceptions.UserNotFoundException;
 
 /**
  *
@@ -69,7 +62,9 @@ public class LoginController implements Initializable {
             librarymanagementsystem.LibraryManagementSystem.CURRENT_USER = UserAuthenticator.authenticate(this.txtUsername.getText(), password);
             if (librarymanagementsystem.LibraryManagementSystem.CURRENT_USER != null) {
                 // show dashboard 
-                LibraryManagementSystem.showView("user.dashboard");
+                AnchorPane currentView = LibraryManagementSystem.showView("user.dashboard");
+                DashboardController dashboardController = (DashboardController)LibraryManagementSystem.ControllerCollection.get(currentView);
+                dashboardController.updateUserLabel(librarymanagementsystem.LibraryManagementSystem.CURRENT_USER);
             } else {
                 // show error dialog
                 Alert alert = new Alert(AlertType.ERROR);
