@@ -8,30 +8,24 @@ package librarymanagementsystem;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import librarymanagementsystem.components.OverdueRecordReport;
+import librarymanagementsystem.components.OverdueSmsNotifierServiceWorker;
 import librarymanagementsystem.components.SemaphoreSMSSender;
 import librarymanagementsystem.components.SettingsRetriever;
-import librarymanagementsystem.components.SmsSenderInterface;
-import librarymanagementsystem.exceptions.FailedToSendSMSException;
-import librarymanagementsystem.models.BookBorrower;
-import librarymanagementsystem.models.Borrower;
+import librarymanagementsystem.facade.SmsNotificationLogFacade;
 
 import librarymanagementsystem.models.User;
 
@@ -49,43 +43,46 @@ public class LibraryManagementSystem extends Application {
     public static FXMLLoader FXMLViewLoader;
     public static HashMap<AnchorPane, Initializable> ControllerCollection;
     public static float PENALTY_PER_DAY = 2;// two pesos
-    public static String API_CODE = null;
-    public static Boolean IS_SMS_NOTIFICATION_ENABLED = false;
-    public static String SMS_SENDER_NAME = "J.A.R.S";
+    public static String API_CODE = "";
+    public static String SMS_NOTIFICATION_STATUS = "";
+    public static String SMS_SENDER_NAME = "";
 
     @Override
     public void start(Stage primaryStage) {
         APP_ROOT_PANE = primaryStage;
-        APP_ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("LibraryManagementSystemPU");
-        APP_ENTITY_MANAGER = LibraryManagementSystem.APP_ENTITY_MANAGER_FACTORY.createEntityManager();
-        APPLICATION_VIEW = new HashMap<>();
         APP_ROOT_PANE.initStyle(StageStyle.UNDECORATED);
         LibraryManagementSystem.ControllerCollection = new HashMap<>();
         AnchorPane root = new AnchorPane();
         Scene defaultScene = new Scene(root);
         APP_ROOT_PANE.setScene(defaultScene);
         RECENT_PANE_HISTORY = new ArrayList<>();
-
         //load application settings 
         this.loadApplicationSettings();
-
         // load the views
         this.loadViews();
-        this.runOverdueSmsNotifier();
         //get and show the login pane
         LibraryManagementSystem.showView("user.login");
-        //LibraryManagementSystem.showView("user.dashboard");
-        //LibraryManagementSystem.showView("borrower.manage");
-        //LibraryManagementSystem.showView("user.manage");
-        //LibraryManagementSystem.showView("book.manage");
-        //LibraryManagementSystem.showView("settings.manage");
-        //LibraryManagementSystem.showView("book.return");
+        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                OverdueSmsNotifierServiceWorker overdueWorker = new OverdueSmsNotifierServiceWorker();
+                overdueWorker.setSmsNotifFacade(new SmsNotificationLogFacade(APP_ENTITY_MANAGER_FACTORY));
+                //overdueWorker.setSmsSender(new TestSmsSender());// @TODO - change this to SemaPhoneSmsSender
+                overdueWorker.setSmsSender(new SemaphoreSMSSender());// @TODO - change this to SemaPhoneSmsSender
+                overdueWorker.start();
+            }
+        });
+
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        APP_ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("LibraryManagementSystemPU");
+        APP_ENTITY_MANAGER = LibraryManagementSystem.APP_ENTITY_MANAGER_FACTORY.createEntityManager();
+        APPLICATION_VIEW = new HashMap<>();
         launch(args);
     }
 
@@ -156,50 +153,12 @@ public class LibraryManagementSystem extends Application {
         }
     }
 
-    // @TODO
-    private void runOverdueSmsNotifier() {
-        OverdueRecordReport overDueReport = new OverdueRecordReport(LibraryManagementSystem.APP_ENTITY_MANAGER, LibraryManagementSystem.APP_ENTITY_MANAGER_FACTORY);
-        List<BookBorrower> overduedBooks = overDueReport.getOverdueReport();
-        for (Iterator<BookBorrower> iterator = overduedBooks.iterator(); iterator.hasNext();) {
-            BookBorrower curBookBorrower = iterator.next();
-            Borrower currentBorrower = curBookBorrower.getBorrowerId();
-            // sms notification not yet sent
-            if (!smsNotificationSent(curBookBorrower)) {
-                // send the notification
-                SmsSenderInterface smssender = new SemaphoreSMSSender();
-                smssender.setMessage("Good day borrower. The book/s that you borrowed has reached its overdue date. Please return the books asap. ");
-                //mobile number is not null or not empty
-                if (currentBorrower.getMobileNumber() != null || !currentBorrower.getMobileNumber().equals("")) {
-                    if (LibraryManagementSystem.IS_SMS_NOTIFICATION_ENABLED) {
-                        try {
-                            smssender.setRecipient(currentBorrower.getMobileNumber());
-                            Logger.getLogger(LibraryManagementSystem.class.getName()).log(Level.INFO, "About to send sms notification to " + currentBorrower.getMobileNumber());
-                            smssender.sendSms();
-                            Logger.getLogger(LibraryManagementSystem.class.getName()).log(Level.INFO, "Sms notification sent to " + currentBorrower.getMobileNumber());
-                        } catch (FailedToSendSMSException ex) {
-                            Logger.getLogger(LibraryManagementSystem.class.getName()).log(Level.INFO, "Can't notify user via sms");
-                            Logger.getLogger(LibraryManagementSystem.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                } else {
-                    Logger.getLogger(LibraryManagementSystem.class.getName()).log(Level.INFO, "This book borrower record doesnt have contact information. #" + curBookBorrower.getId());
-                }
-
-            }
-        }
-    }
-
-    // @TODO - checks the tbl_sms_notification log
-    private boolean smsNotificationSent(BookBorrower curBookBorrower) {
-        return true;
-    }
-
-    // @TODO 
     private void loadApplicationSettings() {
         // retrieve from database the apicode
-        LibraryManagementSystem.API_CODE = SettingsRetriever.getApiCode();
-        LibraryManagementSystem.IS_SMS_NOTIFICATION_ENABLED = SettingsRetriever.isSmsNotificationEnable();
-        LibraryManagementSystem.SMS_SENDER_NAME = SettingsRetriever.getSmsSenderName();
+        SettingsRetriever settingsRetriever = new SettingsRetriever();
+        LibraryManagementSystem.API_CODE = settingsRetriever.getApiCode();
+        LibraryManagementSystem.SMS_NOTIFICATION_STATUS = settingsRetriever.getNotificationStatus();
+        LibraryManagementSystem.SMS_SENDER_NAME = settingsRetriever.getSmsSenderName();
         // done
     }
 

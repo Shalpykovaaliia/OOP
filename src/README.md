@@ -223,23 +223,48 @@ it should show "This borrower didnt borrow any books or has returned the books h
 @TODO - when borrowing books. nadodoble yung last na bookborrow na record
 @DONE
 
-@TODO - LibraryManagementSystem.java - continue the line with @TODO
 
+
+@DONE
 @TODO - on load of librarymanagement system class . 
 check setting is present. if not yet there . create the setting 
-if setting record is there . dont update
+if setting record is there . dont update - @DONE
+@TODO - SMS_API_CODE - @DONE
+@TODO - SMS_SENDER_NAME- @DONE
+@TODO - NOTIFICATION_STATUS  [enabled,disabled] - @DONE
 
-@TODO - SMS_API_CODE
+@TODO  - create table log for sending sms to prevent double sending.
+tbl_sms_notification_log
+id
+book_borrower_id
+status
+date_sent
+@DONE
 
-@TODO - SMS_SENDER_NAME
-
-@TODO - NOTIFICATION_STATUS  [enabled,disabled]
+@TODO - LibraryManagementSystem.java - continue the line with 
+@TODO
 
 @TODO  - overdued books notification . notify evertyime system boots up. 
 only once. Overdued books should have a log if it is notified via SMS or not. 
 To prevent double sending
 there should be a log that will log borrowers id and book id .
 and has a status of sent or not . and the date the notifiction is sent
+@DONE
+
+@TODO - LibraryManagement line 80
+@DONE
+
+@TODO - transfer the logic into thread. 
+make the thread run every minute
+@DONE
+
+@TODO - fix thread issue in LibraryManagement like 79
+@DONE
+
+@TODO - test settings update panel
+@DONE
+
+@TODO - panel to see sms notification logs
 
 
 =====================

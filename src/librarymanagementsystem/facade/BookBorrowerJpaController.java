@@ -6,16 +6,20 @@
 package librarymanagementsystem.facade;
 
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import librarymanagementsystem.models.Borrower;
+import librarymanagementsystem.models.SmsNotificationLog;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import librarymanagementsystem.facade.exceptions.IllegalOrphanException;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.models.BookBorrower;
-import librarymanagementsystem.models.Borrower;
 
 /**
  *
@@ -33,6 +37,9 @@ public class BookBorrowerJpaController implements Serializable {
     }
 
     public void create(BookBorrower bookBorrower) {
+        if (bookBorrower.getSmsNotificationLogCollection() == null) {
+            bookBorrower.setSmsNotificationLogCollection(new ArrayList<SmsNotificationLog>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -42,10 +49,25 @@ public class BookBorrowerJpaController implements Serializable {
                 borrowerId = em.getReference(borrowerId.getClass(), borrowerId.getBorrowerId());
                 bookBorrower.setBorrowerId(borrowerId);
             }
+            Collection<SmsNotificationLog> attachedSmsNotificationLogCollection = new ArrayList<SmsNotificationLog>();
+            for (SmsNotificationLog smsNotificationLogCollectionSmsNotificationLogToAttach : bookBorrower.getSmsNotificationLogCollection()) {
+                smsNotificationLogCollectionSmsNotificationLogToAttach = em.getReference(smsNotificationLogCollectionSmsNotificationLogToAttach.getClass(), smsNotificationLogCollectionSmsNotificationLogToAttach.getId());
+                attachedSmsNotificationLogCollection.add(smsNotificationLogCollectionSmsNotificationLogToAttach);
+            }
+            bookBorrower.setSmsNotificationLogCollection(attachedSmsNotificationLogCollection);
             em.persist(bookBorrower);
             if (borrowerId != null) {
                 borrowerId.getBookBorrowerCollection().add(bookBorrower);
                 borrowerId = em.merge(borrowerId);
+            }
+            for (SmsNotificationLog smsNotificationLogCollectionSmsNotificationLog : bookBorrower.getSmsNotificationLogCollection()) {
+                BookBorrower oldBookBorrowerIdOfSmsNotificationLogCollectionSmsNotificationLog = smsNotificationLogCollectionSmsNotificationLog.getBookBorrowerId();
+                smsNotificationLogCollectionSmsNotificationLog.setBookBorrowerId(bookBorrower);
+                smsNotificationLogCollectionSmsNotificationLog = em.merge(smsNotificationLogCollectionSmsNotificationLog);
+                if (oldBookBorrowerIdOfSmsNotificationLogCollectionSmsNotificationLog != null) {
+                    oldBookBorrowerIdOfSmsNotificationLogCollectionSmsNotificationLog.getSmsNotificationLogCollection().remove(smsNotificationLogCollectionSmsNotificationLog);
+                    oldBookBorrowerIdOfSmsNotificationLogCollectionSmsNotificationLog = em.merge(oldBookBorrowerIdOfSmsNotificationLogCollectionSmsNotificationLog);
+                }
             }
             em.getTransaction().commit();
         } finally {
@@ -55,7 +77,7 @@ public class BookBorrowerJpaController implements Serializable {
         }
     }
 
-    public void edit(BookBorrower bookBorrower) throws NonexistentEntityException, Exception {
+    public void edit(BookBorrower bookBorrower) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -63,10 +85,31 @@ public class BookBorrowerJpaController implements Serializable {
             BookBorrower persistentBookBorrower = em.find(BookBorrower.class, bookBorrower.getId());
             Borrower borrowerIdOld = persistentBookBorrower.getBorrowerId();
             Borrower borrowerIdNew = bookBorrower.getBorrowerId();
+            Collection<SmsNotificationLog> smsNotificationLogCollectionOld = persistentBookBorrower.getSmsNotificationLogCollection();
+            Collection<SmsNotificationLog> smsNotificationLogCollectionNew = bookBorrower.getSmsNotificationLogCollection();
+            List<String> illegalOrphanMessages = null;
+            for (SmsNotificationLog smsNotificationLogCollectionOldSmsNotificationLog : smsNotificationLogCollectionOld) {
+                if (!smsNotificationLogCollectionNew.contains(smsNotificationLogCollectionOldSmsNotificationLog)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain SmsNotificationLog " + smsNotificationLogCollectionOldSmsNotificationLog + " since its bookBorrowerId field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
             if (borrowerIdNew != null) {
                 borrowerIdNew = em.getReference(borrowerIdNew.getClass(), borrowerIdNew.getBorrowerId());
                 bookBorrower.setBorrowerId(borrowerIdNew);
             }
+            Collection<SmsNotificationLog> attachedSmsNotificationLogCollectionNew = new ArrayList<SmsNotificationLog>();
+            for (SmsNotificationLog smsNotificationLogCollectionNewSmsNotificationLogToAttach : smsNotificationLogCollectionNew) {
+                smsNotificationLogCollectionNewSmsNotificationLogToAttach = em.getReference(smsNotificationLogCollectionNewSmsNotificationLogToAttach.getClass(), smsNotificationLogCollectionNewSmsNotificationLogToAttach.getId());
+                attachedSmsNotificationLogCollectionNew.add(smsNotificationLogCollectionNewSmsNotificationLogToAttach);
+            }
+            smsNotificationLogCollectionNew = attachedSmsNotificationLogCollectionNew;
+            bookBorrower.setSmsNotificationLogCollection(smsNotificationLogCollectionNew);
             bookBorrower = em.merge(bookBorrower);
             if (borrowerIdOld != null && !borrowerIdOld.equals(borrowerIdNew)) {
                 borrowerIdOld.getBookBorrowerCollection().remove(bookBorrower);
@@ -75,6 +118,17 @@ public class BookBorrowerJpaController implements Serializable {
             if (borrowerIdNew != null && !borrowerIdNew.equals(borrowerIdOld)) {
                 borrowerIdNew.getBookBorrowerCollection().add(bookBorrower);
                 borrowerIdNew = em.merge(borrowerIdNew);
+            }
+            for (SmsNotificationLog smsNotificationLogCollectionNewSmsNotificationLog : smsNotificationLogCollectionNew) {
+                if (!smsNotificationLogCollectionOld.contains(smsNotificationLogCollectionNewSmsNotificationLog)) {
+                    BookBorrower oldBookBorrowerIdOfSmsNotificationLogCollectionNewSmsNotificationLog = smsNotificationLogCollectionNewSmsNotificationLog.getBookBorrowerId();
+                    smsNotificationLogCollectionNewSmsNotificationLog.setBookBorrowerId(bookBorrower);
+                    smsNotificationLogCollectionNewSmsNotificationLog = em.merge(smsNotificationLogCollectionNewSmsNotificationLog);
+                    if (oldBookBorrowerIdOfSmsNotificationLogCollectionNewSmsNotificationLog != null && !oldBookBorrowerIdOfSmsNotificationLogCollectionNewSmsNotificationLog.equals(bookBorrower)) {
+                        oldBookBorrowerIdOfSmsNotificationLogCollectionNewSmsNotificationLog.getSmsNotificationLogCollection().remove(smsNotificationLogCollectionNewSmsNotificationLog);
+                        oldBookBorrowerIdOfSmsNotificationLogCollectionNewSmsNotificationLog = em.merge(oldBookBorrowerIdOfSmsNotificationLogCollectionNewSmsNotificationLog);
+                    }
+                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -93,7 +147,7 @@ public class BookBorrowerJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -104,6 +158,17 @@ public class BookBorrowerJpaController implements Serializable {
                 bookBorrower.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The bookBorrower with id " + id + " no longer exists.", enfe);
+            }
+            List<String> illegalOrphanMessages = null;
+            Collection<SmsNotificationLog> smsNotificationLogCollectionOrphanCheck = bookBorrower.getSmsNotificationLogCollection();
+            for (SmsNotificationLog smsNotificationLogCollectionOrphanCheckSmsNotificationLog : smsNotificationLogCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This BookBorrower (" + bookBorrower + ") cannot be destroyed since the SmsNotificationLog " + smsNotificationLogCollectionOrphanCheckSmsNotificationLog + " in its smsNotificationLogCollection field has a non-nullable bookBorrowerId field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             Borrower borrowerId = bookBorrower.getBorrowerId();
             if (borrowerId != null) {

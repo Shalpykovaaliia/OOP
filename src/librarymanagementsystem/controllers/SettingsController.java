@@ -26,6 +26,7 @@ import javafx.scene.control.Alert;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
+import librarymanagementsystem.components.SettingsRetriever;
 import librarymanagementsystem.facade.SettingFacade;
 import librarymanagementsystem.models.BookBorrower;
 import librarymanagementsystem.models.Setting;
@@ -69,10 +70,24 @@ public class SettingsController implements Initializable {
     void saveSettings(ActionEvent event) {
         String smsApiCode = "", senderName = "", smsNotificationStatus = "";
         this.validateFields();
-        if (this.errorMessages.size() == 0) {
+        Logger.getLogger(SettingsController.class.getName()).log(Level.INFO, "Is error message empty? "+this.errorMessages.isEmpty());
+        if (this.errorMessages.isEmpty()) {
+            smsApiCode = smsApicode.getText();
+            senderName = smsSenderName.getText();
             this.saveApiCode(smsApiCode);
             this.saveSenderName(senderName);
+            if (this.enableSMSNotification.isSelected()) {
+                smsNotificationStatus = "enabled";
+            } else {
+                smsNotificationStatus = "disabled";
+            }
             this.saveSmsNotification(smsNotificationStatus);
+
+            Alert successMessage = new Alert(Alert.AlertType.INFORMATION);
+            successMessage.setTitle("Saved");
+            successMessage.setHeaderText("Settings saved");
+            successMessage.setContentText("Application settings saved");
+            successMessage.showAndWait();
         } else {
             // show error message
             StringBuilder errorMessagBuilder = new StringBuilder();
@@ -91,7 +106,7 @@ public class SettingsController implements Initializable {
             validationErrorMessage.setContentText(errorMessStr);
             validationErrorMessage.showAndWait();
         }
-        this.clearFields();
+        
     }
 
     @Override
@@ -99,11 +114,15 @@ public class SettingsController implements Initializable {
         this.emf = librarymanagementsystem.LibraryManagementSystem.APP_ENTITY_MANAGER_FACTORY;
         this.em = emf.createEntityManager();
         this.settingsFacade = new SettingFacade(emf);
+        
+        //disable changing of sender name
+        this.smsSenderName.setEditable(false);
 
         this.setNotificationStatusValue();
         this.initializeValidators();
         this.registerValidator();
         this.registerFormFields();
+        this.setDefaultValues();
 
     }
 
@@ -111,6 +130,7 @@ public class SettingsController implements Initializable {
         TypedQuery<Setting> query = em.createNamedQuery("Setting.smsApiCode", Setting.class);
         try {
             Setting returnedSetting = query.getSingleResult();
+            returnedSetting.setSettingValue(smsApiCode);
             // update the setting
             this.settingsFacade.edit(returnedSetting);
         } catch (Exception ex) {
@@ -201,9 +221,17 @@ public class SettingsController implements Initializable {
         }
     }
 
-    private void clearFields() {
-        this.smsApicode.setText("");
-        this.smsSenderName.setText("");
+
+    private void setDefaultValues() {
+        SettingsRetriever settingRetriever = new SettingsRetriever();
+        this.smsApicode.setText(settingRetriever.getApiCode());
+        this.smsSenderName.setText(settingRetriever.getSmsSenderName());
+        if(settingRetriever.getNotificationStatus().equals("enabled")){
+            this.enableSMSNotification.setSelected(true);
+        }else{
+            this.enableSMSNotification.setSelected(false);
+        }
+        
     }
 
 }

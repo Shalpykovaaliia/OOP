@@ -11,6 +11,7 @@
     <class>librarymanagementsystem.models.BookOverdue</class>
     <class>librarymanagementsystem.models.TblUser</class>
     <class>librarymanagementsystem.models.Setting</class>
+    <class>librarymanagementsystem.models.SmsNotificationLog</class>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/db_librarymanagement?zeroDateTimeBehavior=convertToNull"/>

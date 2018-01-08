@@ -6,8 +6,10 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,10 +20,12 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -42,6 +46,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "BookBorrower.findOverduedBook", query = "SELECT b FROM BookBorrower b where b.expectedReturnDate < CURRENT_DATE and b.dateReturned is null group by b.bookId")
     , @NamedQuery(name = "BookBorrower.findByDateBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateBorrowed = :dateBorrowed")})
 public class BookBorrower implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookBorrowerId")
+    private Collection<SmsNotificationLog> smsNotificationLogCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -161,6 +168,15 @@ public class BookBorrower implements Serializable {
     @Override
     public String toString() {
         return "librarymanagementsystem.models.BookBorrower[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<SmsNotificationLog> getSmsNotificationLogCollection() {
+        return smsNotificationLogCollection;
+    }
+
+    public void setSmsNotificationLogCollection(Collection<SmsNotificationLog> smsNotificationLogCollection) {
+        this.smsNotificationLogCollection = smsNotificationLogCollection;
     }
 
 }
