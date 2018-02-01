@@ -1,18 +1,33 @@
 # Simple Library Management System using JavaFx
 
 [![N|Solid](https://jaxenter.com/wp-content/uploads/2013/03/javafx.1.png)](#)
-Simple Library Management System using JavaFx
 
 ## Features
-@TODO
-
+@TODO - list features
+* Manage borrower
+    * Fine search @TODO
+* Manage book record
+    * fine search @TODO
+* Book overdue notification
+* Notify admin when credits run out  - @TODO
+* Generate printable barcode -@TODO
+* Manage user
+* Quick scan - scan barcode and show information of scanned barcode @TODO
+* Penalty Information
+* Borrowed Books monitoring
+* Returned Book monitor
+* Penalty Report by date range-show list of people that paid penalty and show its total collected @TODO
+* Track borrowed books 
+    * viewable information on clicked at dashboard - @TODO
+* Track borrowers
+    * viewable information on clicked at dashboard - @TODO
 
 ## Screenshot
 ![](docs/dashboard.PNG)
 ![](docs/login.PNG)
-![](docs/manage book.PNG)
-![](docs/manage settings.PNG)
-![](docs/manage user.PNG)
+![](docs/manage_book.PNG)
+![](docs/manage_settings.PNG)
+![](docs/manage_user.PNG)
 
 
 ## CHANGELOG
