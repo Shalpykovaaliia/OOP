@@ -7,6 +7,14 @@ Simple Library Management System using JavaFx
 @TODO
 
 
+## Screenshot
+![](docs/dashboard.PNG)
+![](docs/login.PNG)
+![](docs/manage book.PNG)
+![](docs/manage settings.PNG)
+![](docs/manage user.PNG)
+
+
 ## CHANGELOG
 ### [1.0.1](https://github.com/kevindaus/library-management-system-javafx/releases/tag/1.0.1)
 ADD = sms notification
