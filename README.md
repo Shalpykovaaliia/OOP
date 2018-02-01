@@ -3,7 +3,6 @@
 [![N|Solid](https://jaxenter.com/wp-content/uploads/2013/03/javafx.1.png)](#)
 
 ## Features
-@TODO - list features
 * Manage borrower
     * Fine search @TODO
 * Manage book record
