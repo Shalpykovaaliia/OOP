@@ -111,6 +111,9 @@ public class ManageUserController implements Initializable {
     @FXML
     private JFXTextField phoneField;
 
+    @FXML
+    private JFXButton clearAllFieldsBtn;
+
     protected ContextMenu contextMenu;
 
     private UserFacade userFacade;
@@ -602,4 +605,9 @@ public class ManageUserController implements Initializable {
         securityQuestionAnswer3.setText("");
     }
 
+    @FXML
+    void clearAllFields(ActionEvent event) {
+        this.currentUser = null;
+        this.clearFields();
+    }
 }

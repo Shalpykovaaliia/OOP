@@ -119,6 +119,10 @@ public class ManageBorrowerController implements Initializable {
 
     @FXML
     private JFXButton submitFormBtn;
+
+    @FXML
+    private JFXButton clearFieldsBtn;
+    
     private EntityManagerFactory emf;
     private EntityManager em;
     private BorrowerFacade borrowerFacade;
@@ -474,5 +478,12 @@ public class ManageBorrowerController implements Initializable {
         borrowerMobileNumber.setText("");
         borrowerEmailAddress.setText("");
         borrowerGenderMale.setSelected(true);
+        
+    }
+
+    @FXML
+    void clearAllFields(ActionEvent event) {
+        this.currentSelectedBorrower = null;
+        this.clearFields();
     }
 }

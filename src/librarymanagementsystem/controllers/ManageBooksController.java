@@ -100,7 +100,10 @@ public class ManageBooksController implements Initializable {
 
     @FXML
     private JFXTextField bookBarcode;
-
+    
+    @FXML
+    private JFXButton clearAllFieldsBtn;
+    
     private RequiredFieldValidator isbnValidator;
     private RequiredFieldValidator bookTitleValidator;
     private RequiredFieldValidator bookAuthorValidator;
@@ -224,6 +227,7 @@ public class ManageBooksController implements Initializable {
         this.bookDescription.setText("");
         this.bookEdition.setText("");
         this.bookEditionYear.setText("");
+        this.bookBarcode.setText("");
     }
 
     private void registerTableMenu() {
@@ -383,4 +387,12 @@ public class ManageBooksController implements Initializable {
         this.clearFields();
     }
 
+
+    @FXML
+    void clearAllFields(ActionEvent event) {
+        this.currentBook = null;
+        this.clearFields();
+    }
+
+    
 }
