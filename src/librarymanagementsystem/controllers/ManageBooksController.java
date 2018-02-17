@@ -261,6 +261,7 @@ public class ManageBooksController implements Initializable {
                     }
                 }
                 contextMenu.hide();
+                clearFields();
             }
         });
         updateMenuItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -274,6 +275,7 @@ public class ManageBooksController implements Initializable {
                     currentBook = foundBook;
                     // load the information to the text box 
                     bookIsbn.setText(foundBook.getIsbn());
+                    bookBarcode.setText(foundBook.getBarcodeIdentification());
                     bookAvailability.setValue(foundBook.getAvailability());
                     bookTitle.setText(foundBook.getTitle());
                     bookAuthor.setText(foundBook.getAuthor());

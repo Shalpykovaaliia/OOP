@@ -56,13 +56,14 @@ ADD = initial project file
 * [Controls Fx](http://fxexperience.com/controlsfx/)
 
 ### Installation (@TODO)
-1. Step 1
-2. Step 2
+1. Download and install the database dump
+2. Run the application under 
 
 
 ### Have a problem with the project ? 
+File an issue ticket. admin
 
-File an issue ticket. 
+
 
 
 License
