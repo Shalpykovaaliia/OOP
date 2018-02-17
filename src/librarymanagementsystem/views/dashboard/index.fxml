@@ -231,7 +231,7 @@
                   </VBox>
                   <VBox layoutX="277.0" layoutY="360.0" prefHeight="60.0" prefWidth="247.0">
                      <children>
-                        <JFXButton fx:id="penaltyReportButton" onAction="#openPenaltyReportView" prefHeight="107.0" prefWidth="264.0" style="-fx-background-color: #2895F8;" text="Penalty Report" textFill="WHITE">
+                        <JFXButton fx:id="penaltyReportButton" disable="true" onAction="#openPenaltyReportView" prefHeight="107.0" prefWidth="264.0" style="-fx-background-color: #2895F8;" text="Penalty Report" textFill="WHITE">
                            <font>
                               <Font size="20.0" />
                            </font>

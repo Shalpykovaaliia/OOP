@@ -32,7 +32,7 @@
                         <AnchorPane prefHeight="84.0" prefWidth="772.0" HBox.hgrow="ALWAYS" />
                         <VBox prefHeight="84.0" prefWidth="231.0">
                            <children>
-                              <Label lineSpacing="1.0" text="Manage System User" textFill="WHITE">
+                              <Label lineSpacing="1.0" text="Manage Book" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -40,7 +40,7 @@
                                     <Insets top="20.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label text="Manage the accounts that can access the system" textFill="WHITE">
+                              <Label text="Manage book records" textFill="WHITE">
                                  <font>
                                     <Font size="10.0" />
                                  </font>

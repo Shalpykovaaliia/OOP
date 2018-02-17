@@ -4,7 +4,6 @@
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -37,13 +36,12 @@
                                         <Font name="Roboto Light" size="14.0" />
                                     </font>
                                 </JFXPasswordField>
-                                <JFXButton fx:id="btnLogin" buttonType="RAISED" layoutX="260.0" layoutY="296.0" onAction="#login" prefHeight="37.0" prefWidth="91.0" style="-fx-background-color: #00718A;" text="Login" textFill="WHITE">
+                                <JFXButton fx:id="btnLogin" buttonType="RAISED" layoutX="54.0" layoutY="296.0" onAction="#login" prefHeight="37.0" prefWidth="297.0" style="-fx-background-color: #00718A;" text="Login" textFill="WHITE">
                                     <font>
                                         <Font name="Roboto Bold" size="14.0" />
                                     </font>
                                 </JFXButton>
                                 <FontAwesomeIconView fill="#00718c" glyphName="UNLOCK_ALT" layoutX="167.0" layoutY="100.0" style="-fx-font-size: 100px;" />
-                                <Hyperlink layoutX="61.0" layoutY="303.0" text="Forgot Password" />
                             </children>
                         </AnchorPane>
                         <Label layoutX="227.0" layoutY="39.0" text="Library Management System" textFill="WHITE">
