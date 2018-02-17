@@ -19,8 +19,10 @@ import javafx.event.EventHandler;
 import javax.persistence.Query;
 import librarymanagementsystem.LibraryManagementSystem;
 import librarymanagementsystem.exceptions.FailedToSendSMSException;
+import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.SmsNotificationLogFacade;
 import librarymanagementsystem.models.BookBorrower;
+import librarymanagementsystem.models.Books;
 import librarymanagementsystem.models.Borrower;
 import librarymanagementsystem.models.SmsNotificationLog;
 import org.eclipse.persistence.config.HintValues;
@@ -34,8 +36,11 @@ public class OverdueSmsNotifierServiceWorker extends Service<ObservableList<Stri
 
     protected SmsNotificationLogFacade smsNotifFacade;
     protected SmsSenderInterface smsSender;
+    protected BooksFacade bookFacade;
 
     public OverdueSmsNotifierServiceWorker() {
+        bookFacade = new BooksFacade(LibraryManagementSystem.APP_ENTITY_MANAGER_FACTORY);
+        
         this.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
@@ -43,6 +48,7 @@ public class OverdueSmsNotifierServiceWorker extends Service<ObservableList<Stri
                 restart();
             }
         });
+        
     }
 
     @Override
@@ -69,7 +75,7 @@ public class OverdueSmsNotifierServiceWorker extends Service<ObservableList<Stri
         return smsNotifyTask;
     }
 
-    // @TODO = Subject to testing
+    
     private void runOverdueSmsNotifier() {
         Logger.getLogger(OverdueRecordReport.class.getName()).log(Level.INFO, "Running notifier.");
         OverdueRecordReport overDueReport = new OverdueRecordReport(LibraryManagementSystem.APP_ENTITY_MANAGER, LibraryManagementSystem.APP_ENTITY_MANAGER_FACTORY);
@@ -78,12 +84,13 @@ public class OverdueSmsNotifierServiceWorker extends Service<ObservableList<Stri
         for (Iterator<BookBorrower> iterator = overduedBooks.iterator(); iterator.hasNext();) {
             BookBorrower curBookBorrower = iterator.next();
             Borrower currentBorrower = curBookBorrower.getBorrowerId();
+            Books foundBook = bookFacade.findBooks(curBookBorrower.getBookId());
             // sms notification not yet sent
             Logger.getLogger(OverdueRecordReport.class.getName()).log(Level.INFO, "Checking notification log.");
             if (!smsNotificationSent(curBookBorrower)) {
                 Logger.getLogger(OverdueRecordReport.class.getName()).log(Level.INFO, "Sending the sms notification.");
                 // send the notification
-                sendSmsNotification(curBookBorrower, currentBorrower);
+                sendSmsNotification(curBookBorrower, currentBorrower ,foundBook);
                 // create a log of the activity
                 SmsNotificationLog smsNotificationLog = new SmsNotificationLog();
                 smsNotificationLog.setBookBorrowerId(curBookBorrower);
@@ -109,8 +116,8 @@ public class OverdueSmsNotifierServiceWorker extends Service<ObservableList<Stri
         }
     }
 
-    private void sendSmsNotification(BookBorrower curBookBorrower, Borrower currentBorrower) {
-        this.smsSender.setMessage("Good day borrower. The book/s that you borrowed has reached its overdue date. Please return the books asap. ");
+    private void sendSmsNotification(BookBorrower curBookBorrower, Borrower currentBorrower,Books foundBook) {
+        this.smsSender.setMessage("Good day borrower. The book \""+foundBook.getTitle()+"\" that you borrowed has reached its overdue date. ");
         //mobile number is not null or not empty
         if (currentBorrower.getMobileNumber() != null || !currentBorrower.getMobileNumber().equals("")) {
             if (LibraryManagementSystem.SMS_NOTIFICATION_STATUS.equals("enabled")) {
