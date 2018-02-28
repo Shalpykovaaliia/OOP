@@ -6,9 +6,11 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +22,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.QueryHint;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -58,7 +61,7 @@ public class Books implements Serializable {
     @Column(name = "ISBN")
     private String isbn;
     @Basic(optional = true)
-    @Column(name = "barcode_identification")
+    @Column(name = "barcode_identification", unique = true)
     private String barcodeIdentification;
     @Basic(optional = false)
     @Column(name = "availability")
@@ -93,8 +96,11 @@ public class Books implements Serializable {
     @ManyToMany
     private List<Category> categoryList;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookId")
+    private Collection<BookBorrower> bookBorrowerCollection;
+
     public static String AVAILABLE_STATUS = "Available";
-    
+
     public static String UNAVAILABLE_STATUS = "Unavailable";
 
     public Books() {
