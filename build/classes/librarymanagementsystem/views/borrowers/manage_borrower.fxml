@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="583.0" prefWidth="1118.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="librarymanagementsystem.controllers.ManageBorrowerController">
+<AnchorPane id="AnchorPane" prefHeight="622.0" prefWidth="1118.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="librarymanagementsystem.controllers.ManageBorrowerController">
    <children>
       <BorderPane layoutX="38.0" prefHeight="826.0" prefWidth="1118.0" AnchorPane.bottomAnchor="-243.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -57,7 +57,7 @@
          <center>
             <VBox prefHeight="468.0" prefWidth="617.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
                <children>
-                  <TableView fx:id="borrowerTableGrid" prefHeight="463.0" prefWidth="577.0">
+                  <TableView fx:id="borrowerTableGrid" prefHeight="497.0" prefWidth="577.0">
                     <columns>
                         <TableColumn fx:id="borrowerIdColumn" prefWidth="75.0" text="ID" />
                       <TableColumn fx:id="borrowerNameColumn" prefWidth="75.0" text="Name" />
@@ -77,9 +77,9 @@
          <left>
             <AnchorPane prefHeight="612.0" prefWidth="501.0" BorderPane.alignment="CENTER">
                <children>
-                  <VBox prefHeight="494.0" prefWidth="501.0">
+                  <VBox prefHeight="615.0" prefWidth="501.0">
                      <children>
-                        <HBox prefHeight="452.0" prefWidth="501.0">
+                        <HBox prefHeight="457.0" prefWidth="501.0">
                            <children>
                               <VBox prefHeight="445.0" prefWidth="311.0" spacing="30.0">
                                  <children>
@@ -88,6 +88,7 @@
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
+                                    <JFXTextField fx:id="borrowerBarcode" promptText="Student ID (barcode)" />
                                     <JFXTextField fx:id="borrowerTitle" labelFloat="true" promptText="Title" />
                                     <JFXTextField fx:id="borrowerFirstname" labelFloat="true" promptText="Firstname" />
                                     <JFXTextField fx:id="borrowerLastname" labelFloat="true" promptText="Lastname" />
@@ -129,7 +130,7 @@
                               </VBox>
                            </children>
                         </HBox>
-                        <HBox prefHeight="100.0" prefWidth="200.0">
+                        <HBox prefHeight="52.0" prefWidth="501.0">
                            <children>
                               <JFXButton fx:id="clearFieldsBtn" alignment="CENTER" contentDisplay="CENTER" onAction="#clearAllFields" prefHeight="10.0" prefWidth="248.0" style="-fx-background-color: #808080;" text="Clear All" textFill="WHITE">
                                  <HBox.margin>

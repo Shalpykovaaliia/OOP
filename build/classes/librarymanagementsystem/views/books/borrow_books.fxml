@@ -103,7 +103,7 @@
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Text>
-                                          <JFXTextField fx:id="filterBorrowerField" labelFloat="true" onAction="#selectCurrentBorrower" promptText="Filter" />
+                                          <JFXTextField fx:id="filterBorrowerField" labelFloat="true" onAction="#selectCurrentBorrower" promptText="Scan Student ID" />
                                           <Text fx:id="borrowerIdentificationId" strokeType="OUTSIDE" strokeWidth="0.0" text="Borrowers Identifacation" />
                                           <Text fx:id="borrowerName" strokeType="OUTSIDE" strokeWidth="0.0" text="Borrowers Name" />
                                           <Text fx:id="borrowerContactInformation" strokeType="OUTSIDE" strokeWidth="0.0" text="Borrowers Contact Information" />
