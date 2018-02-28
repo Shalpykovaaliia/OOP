@@ -6,6 +6,10 @@
 package librarymanagementsystem.models;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -47,6 +51,10 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "BookBorrower.findByDateBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateBorrowed = :dateBorrowed")})
 public class BookBorrower implements Serializable {
 
+    @JoinColumn(name = "book_id", referencedColumnName = "book_id")
+    @ManyToOne(optional = false)
+    private Books bookId;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookBorrowerId")
     private Collection<SmsNotificationLog> smsNotificationLogCollection;
 
@@ -56,9 +64,6 @@ public class BookBorrower implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @Column(name = "book_id")
-    private int bookId;
     @Column(name = "date_returned")
     @Temporal(TemporalType.DATE)
     private Date dateReturned;
@@ -83,9 +88,8 @@ public class BookBorrower implements Serializable {
         this.id = id;
     }
 
-    public BookBorrower(Integer id, int bookId, String notes) {
+    public BookBorrower(Integer id, String notes) {
         this.id = id;
-        this.bookId = bookId;
         this.notes = notes;
     }
 
@@ -95,14 +99,6 @@ public class BookBorrower implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
     }
 
     public Date getDateReturned() {
@@ -137,11 +133,11 @@ public class BookBorrower implements Serializable {
         this.notes = notes;
     }
 
-    public Borrower getBorrowerId() {
+    public Borrower getBorrower() {
         return borrowerId;
     }
 
-    public void setBorrowerId(Borrower borrowerId) {
+    public void setBorrower(Borrower borrowerId) {
         this.borrowerId = borrowerId;
     }
 
@@ -177,6 +173,24 @@ public class BookBorrower implements Serializable {
 
     public void setSmsNotificationLogCollection(Collection<SmsNotificationLog> smsNotificationLogCollection) {
         this.smsNotificationLogCollection = smsNotificationLogCollection;
+    }
+
+    public Books getBook() {
+        return bookId;
+    }
+
+    public void setBook(Books bookId) {
+        this.bookId = bookId;
+    }
+
+    public long getOverDueDays() {
+        LocalDate expectedReturnDateLocalDate = this.expectedReturnDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate dateToday = LocalDate.now();
+        return DAYS.between(expectedReturnDateLocalDate, dateToday);
+    }
+
+    public long getComputerFee() {
+        return (long) (this.getOverDueDays()* librarymanagementsystem.LibraryManagementSystem.BOOK_PENALTY_PER_DAY);
     }
 
 }
