@@ -7,6 +7,7 @@ package librarymanagementsystem.controllers;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -93,6 +96,15 @@ public class DashboardController implements Initializable {
     @FXML
     private JFXButton penaltyReportButton;
 
+    @FXML
+    private JFXTextField overdueBooksSearchField;
+
+    @FXML
+    private JFXTextField activeBorrowerSearchField;
+
+    @FXML
+    private JFXTextField borrowedBooksSearchField;
+
     private EntityManager em;
 
     private EntityManagerFactory emf;
@@ -107,6 +119,9 @@ public class DashboardController implements Initializable {
     private ContextMenu borrowedBooksContextMenu;
     private PopOver showBorrower;
     private HashMap<Books, BookBorrower> overduedBooksMap;
+    private HashSet<String> activeBooksBorrowed;
+    private HashSet<String> activeBorrowersName;
+    private ArrayList<String> overDuedBooksList;
 
     @FXML
     void logOut(ActionEvent event) {
@@ -302,10 +317,10 @@ public class DashboardController implements Initializable {
             informationContainer.setSpacing(5);
             informationContainer.setPadding(new Insets(10));
 
-            Text borrowerText = new Text("Borrower : " +tempBorrowerContainer.getTitle()+" "+tempBorrowerContainer.getFirstname()+" "+tempBorrowerContainer.getLastname());
-            Text bookText = new Text("Book : " +tempBooksContainer.getTitle());
-            Text computerFeeText = new Text("Penalty : P " +tempBookBorrower.getComputerFee() +".00" );
-            Text daysOverdueText = new Text("Overdue : " +tempBookBorrower.getOverDueDays()+ " day(s)");
+            Text borrowerText = new Text("Borrower : " + tempBorrowerContainer.getTitle() + " " + tempBorrowerContainer.getFirstname() + " " + tempBorrowerContainer.getLastname());
+            Text bookText = new Text("Book : " + tempBooksContainer.getTitle());
+            Text computerFeeText = new Text("Penalty : P " + tempBookBorrower.getComputerFee() + ".00");
+            Text daysOverdueText = new Text("Overdue : " + tempBookBorrower.getOverDueDays() + " day(s)");
             informationContainer.getChildren().add(borrowerText);
             informationContainer.getChildren().add(bookText);
             informationContainer.getChildren().add(computerFeeText);
@@ -320,9 +335,62 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // @TODO - wrong implementation . use book borrower if date return is null and  expected return date is less date today
+    @FXML
+    void borrowedBooksFilterResult(ActionEvent event) {
+        //@TODO
+        //this.activeBooksBorrowed
+        String filterString = this.borrowedBooksSearchField.getText();
+        if (filterString.isEmpty()) {
+            borrowedBooksListView.getItems().clear();
+            borrowedBooksListView.getItems().addAll(new ArrayList<>(activeBooksBorrowed));
+        } else {
+            // filter the observable data of 
+            List<String> filteredData = borrowedBooksListView.getItems().stream()
+                    .filter(currentItem -> currentItem.toLowerCase().contains(filterString.toLowerCase()))
+                    .collect(Collectors.toList());
+                    
+            borrowedBooksListView.getItems().clear();
+            borrowedBooksListView.getItems().addAll(filteredData);
+        }
+    }
+
+    @FXML
+    void activeBorrowerFilterResult(ActionEvent event) {
+        //@TODO
+        //this.activeBorrowersName
+        String filterString = this.activeBorrowerSearchField.getText();
+        if (filterString.isEmpty()) {
+            activeBorrowersListView.getItems().clear();
+            activeBorrowersListView.getItems().addAll(new ArrayList<>(activeBorrowersName));
+        }else{
+            List<String> filteredData  =  activeBorrowersListView.getItems().stream()
+                    .filter( currentItem -> currentItem.toLowerCase().contains(filterString.toLowerCase()))
+                    .collect(Collectors.toList());
+            activeBorrowersListView.getItems().clear();
+            activeBorrowersListView.getItems().addAll(filteredData);
+        }
+    }
+
+    @FXML
+    void overdueBooksFilterResult(ActionEvent event) {
+        //@TODO
+        String filterString = this.overdueBooksSearchField.getText();
+        if(filterString.isEmpty()){
+            this.overdueBooksListView.getItems().clear();
+            this.overdueBooksListView.getItems().addAll(overDuedBooksList);
+        }else{
+            List<String> filteredData =   overdueBooksListView.getItems().stream()
+                    .filter( currentItem -> currentItem.toLowerCase().contains(filterString.toLowerCase()))
+                    .collect(Collectors.toList());
+            overdueBooksListView.getItems().clear();
+            overdueBooksListView.getItems().addAll(filteredData);
+            
+        }
+    }
+
     private void loadOverDued() {
         this.overduedBooksMap = new HashMap<>();
+        this.overDuedBooksList = new ArrayList<>();
         TypedQuery<BookBorrower> query = em.createNamedQuery("BookBorrower.findOverduedBook", BookBorrower.class);
         query.setHint("javax.persistence.cache.storeMode", "REFRESH");
         query.setHint(QueryHints.REFRESH, HintValues.TRUE);
@@ -331,9 +399,11 @@ public class DashboardController implements Initializable {
         for (Iterator<BookBorrower> iterator = overduedBorrowedBooks.iterator(); iterator.hasNext();) {
             BookBorrower curOverduedBook = iterator.next();
             Books curBook = curOverduedBook.getBook();
-            overdueBooksListView.getItems().add(curBook.getTitle());
+            this.overDuedBooksList.add(curBook.getTitle());
             this.overduedBooksMap.put(curBook, curOverduedBook);
         }
+        overdueBooksListView.getItems().clear();
+        overdueBooksListView.getItems().addAll(overDuedBooksList);
     }
 
     private void loadDashboardRecords() {
@@ -343,8 +413,8 @@ public class DashboardController implements Initializable {
         bookToBorrowerMap = new HashMap<>();
         borrowerToBook = new HashMap<>();
 
-        HashSet<String> activeBooksBorrowed = new HashSet<>();
-        HashSet<String> activeBorrowersName = new HashSet<>();
+        this.activeBooksBorrowed = new HashSet<>();
+        this.activeBorrowersName = new HashSet<>();
         for (Iterator<BookBorrower> iterator = result.iterator(); iterator.hasNext();) {
             BookBorrower next = iterator.next();
             Borrower borrower = next.getBorrower();
