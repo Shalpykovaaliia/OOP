@@ -44,10 +44,10 @@ public class BookBorrowerJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Borrower borrowerId = bookBorrower.getBorrowerId();
+            Borrower borrowerId = bookBorrower.getBorrower();
             if (borrowerId != null) {
                 borrowerId = em.getReference(borrowerId.getClass(), borrowerId.getBorrowerId());
-                bookBorrower.setBorrowerId(borrowerId);
+                bookBorrower.setBorrower(borrowerId);
             }
             Collection<SmsNotificationLog> attachedSmsNotificationLogCollection = new ArrayList<SmsNotificationLog>();
             for (SmsNotificationLog smsNotificationLogCollectionSmsNotificationLogToAttach : bookBorrower.getSmsNotificationLogCollection()) {
@@ -83,8 +83,8 @@ public class BookBorrowerJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             BookBorrower persistentBookBorrower = em.find(BookBorrower.class, bookBorrower.getId());
-            Borrower borrowerIdOld = persistentBookBorrower.getBorrowerId();
-            Borrower borrowerIdNew = bookBorrower.getBorrowerId();
+            Borrower borrowerIdOld = persistentBookBorrower.getBorrower();
+            Borrower borrowerIdNew = bookBorrower.getBorrower();
             Collection<SmsNotificationLog> smsNotificationLogCollectionOld = persistentBookBorrower.getSmsNotificationLogCollection();
             Collection<SmsNotificationLog> smsNotificationLogCollectionNew = bookBorrower.getSmsNotificationLogCollection();
             List<String> illegalOrphanMessages = null;
@@ -101,7 +101,7 @@ public class BookBorrowerJpaController implements Serializable {
             }
             if (borrowerIdNew != null) {
                 borrowerIdNew = em.getReference(borrowerIdNew.getClass(), borrowerIdNew.getBorrowerId());
-                bookBorrower.setBorrowerId(borrowerIdNew);
+                bookBorrower.setBorrower(borrowerIdNew);
             }
             Collection<SmsNotificationLog> attachedSmsNotificationLogCollectionNew = new ArrayList<SmsNotificationLog>();
             for (SmsNotificationLog smsNotificationLogCollectionNewSmsNotificationLogToAttach : smsNotificationLogCollectionNew) {
@@ -170,7 +170,7 @@ public class BookBorrowerJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Borrower borrowerId = bookBorrower.getBorrowerId();
+            Borrower borrowerId = bookBorrower.getBorrower();
             if (borrowerId != null) {
                 borrowerId.getBookBorrowerCollection().remove(bookBorrower);
                 borrowerId = em.merge(borrowerId);

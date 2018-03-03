@@ -51,8 +51,8 @@ public class BorrowerJpaController implements Serializable {
             borrower.setBookBorrowerCollection(attachedBookBorrowerCollection);
             em.persist(borrower);
             for (BookBorrower bookBorrowerCollectionBookBorrower : borrower.getBookBorrowerCollection()) {
-                Borrower oldBorrowerIdOfBookBorrowerCollectionBookBorrower = bookBorrowerCollectionBookBorrower.getBorrowerId();
-                bookBorrowerCollectionBookBorrower.setBorrowerId(borrower);
+                Borrower oldBorrowerIdOfBookBorrowerCollectionBookBorrower = bookBorrowerCollectionBookBorrower.getBorrower();
+                bookBorrowerCollectionBookBorrower.setBorrower(borrower);
                 bookBorrowerCollectionBookBorrower = em.merge(bookBorrowerCollectionBookBorrower);
                 if (oldBorrowerIdOfBookBorrowerCollectionBookBorrower != null) {
                     oldBorrowerIdOfBookBorrowerCollectionBookBorrower.getBookBorrowerCollection().remove(bookBorrowerCollectionBookBorrower);
@@ -97,8 +97,8 @@ public class BorrowerJpaController implements Serializable {
             borrower = em.merge(borrower);
             for (BookBorrower bookBorrowerCollectionNewBookBorrower : bookBorrowerCollectionNew) {
                 if (!bookBorrowerCollectionOld.contains(bookBorrowerCollectionNewBookBorrower)) {
-                    Borrower oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower = bookBorrowerCollectionNewBookBorrower.getBorrowerId();
-                    bookBorrowerCollectionNewBookBorrower.setBorrowerId(borrower);
+                    Borrower oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower = bookBorrowerCollectionNewBookBorrower.getBorrower();
+                    bookBorrowerCollectionNewBookBorrower.setBorrower(borrower);
                     bookBorrowerCollectionNewBookBorrower = em.merge(bookBorrowerCollectionNewBookBorrower);
                     if (oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower != null && !oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower.equals(borrower)) {
                         oldBorrowerIdOfBookBorrowerCollectionNewBookBorrower.getBookBorrowerCollection().remove(bookBorrowerCollectionNewBookBorrower);

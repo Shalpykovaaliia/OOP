@@ -40,11 +40,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import librarymanagementsystem.beans.BookBean;
+import librarymanagementsystem.constants.Scenario;
 import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.models.Books;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
+import librarymanagementsystem.validator.UniqueBookBarcodeValidator;
 
 /**
  * FXML Controller class
@@ -101,10 +103,14 @@ public class ManageBooksController implements Initializable {
     @FXML
     private JFXTextField bookBarcode;
 
+    @FXML
+    private JFXButton clearAllFieldsBtn;
+
     private RequiredFieldValidator isbnValidator;
     private RequiredFieldValidator bookTitleValidator;
     private RequiredFieldValidator bookAuthorValidator;
     private RequiredFieldValidator bookBarcodeValidator;
+    private UniqueBookBarcodeValidator bookBarcodeUniqueValidator;
     private ArrayList<String> errorMessages = new ArrayList<>();
     private ArrayList<IFXTextInputControl> formFields = new ArrayList<>();
     protected ContextMenu contextMenu;
@@ -112,10 +118,14 @@ public class ManageBooksController implements Initializable {
     private EntityManager em;
     private BooksFacade bookFacade;
     private Books currentBook;
+    private static Scenario CURRENT_SCENARIO = Scenario.NEW_RECORD;
 
     @FXML
     void submitBookInformation(ActionEvent event) {
         this.errorMessages.clear();
+        this.bookBarcodeUniqueValidator.setScenario(ManageBooksController.CURRENT_SCENARIO);
+        this.bookBarcodeUniqueValidator.setSelectedBook(currentBook);
+        ObservableList<ValidatorBase> bookBarcodeValidators = this.bookBarcode.getValidators();
         for (IFXTextInputControl formField : formFields) {
             formField.validate();
             if (formField instanceof JFXTextField) {
@@ -185,8 +195,9 @@ public class ManageBooksController implements Initializable {
     private void registerValidator() {
         this.bookIsbn.getValidators().add(isbnValidator);
         this.bookTitle.getValidators().add(bookTitleValidator);
-        this.bookAuthor.getValidators().add(this.bookAuthorValidator);
-        this.bookBarcode.getValidators().add(this.bookBarcodeValidator);
+        this.bookAuthor.getValidators().add(bookAuthorValidator);
+        this.bookBarcode.getValidators().add(bookBarcodeValidator);
+        this.bookBarcode.getValidators().add(bookBarcodeUniqueValidator);
     }
 
     private void initializeValidators() {
@@ -201,6 +212,9 @@ public class ManageBooksController implements Initializable {
         bookBarcodeValidator = new RequiredFieldValidator();
         bookBarcodeValidator.setMessage("Barcode identification is required");
         bookBarcodeValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
+        bookBarcodeUniqueValidator = new UniqueBookBarcodeValidator();
+        bookBarcodeUniqueValidator.setMessage("This barcode number is already used.");
+        bookBarcodeUniqueValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
     }
 
     private void populateAvailabilityField() {
@@ -212,6 +226,7 @@ public class ManageBooksController implements Initializable {
     private void registerFormFields() {
         this.formFields.add(this.bookIsbn);
         this.formFields.add(this.bookTitle);
+        this.formFields.add(this.bookBarcode);
         this.formFields.add(this.bookAuthor);
         this.formFields.add(this.bookDescription);
         this.formFields.add(this.bookEdition);
@@ -224,6 +239,8 @@ public class ManageBooksController implements Initializable {
         this.bookDescription.setText("");
         this.bookEdition.setText("");
         this.bookEditionYear.setText("");
+        this.bookBarcode.setText("");
+        ManageBooksController.CURRENT_SCENARIO = Scenario.NEW_RECORD;
     }
 
     private void registerTableMenu() {
@@ -267,6 +284,7 @@ public class ManageBooksController implements Initializable {
         updateMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                ManageBooksController.CURRENT_SCENARIO = Scenario.UPDATE_OLD_RECORD;
                 // Get the selected item from table
                 BookBean selectedBook = bookTable.getSelectionModel().getSelectedItem();
                 if (selectedBook != null) {
@@ -294,7 +312,7 @@ public class ManageBooksController implements Initializable {
         // get all records in the database
         Query namedQuery = em.createNamedQuery("Books.findAll");
         namedQuery.setHint(QueryHints.REFRESH, HintValues.TRUE);
-        
+
         List<Books> books = namedQuery.getResultList();
         ObservableList<BookBean> bookCollection = FXCollections.observableArrayList();
         ObservableList<BookBean> currentBookItems = bookTable.getItems();
@@ -380,6 +398,12 @@ public class ManageBooksController implements Initializable {
             Logger.getLogger(ManageBooksController.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.loadListOfBooks();
+        this.clearFields();
+    }
+
+    @FXML
+    void clearAllFields(ActionEvent event) {
+        this.currentBook = null;
         this.clearFields();
     }
 

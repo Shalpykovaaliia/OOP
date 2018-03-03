@@ -8,7 +8,6 @@ package librarymanagementsystem.controllers;
 import com.jfoenix.controls.IFXTextInputControl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
@@ -16,6 +15,7 @@ import com.jfoenix.validation.base.ValidatorBase;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -47,12 +47,13 @@ import javafx.util.Callback;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-import librarymanagementsystem.beans.BookBean;
 import librarymanagementsystem.beans.BorrowerBean;
+import librarymanagementsystem.constants.Scenario;
 import librarymanagementsystem.facade.BorrowerFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
-import librarymanagementsystem.models.Books;
 import librarymanagementsystem.models.Borrower;
+import librarymanagementsystem.validator.UniqueBookBarcodeValidator;
+import librarymanagementsystem.validator.UniqueBorrowerBarcodeValidator;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 
@@ -77,6 +78,9 @@ public class ManageBorrowerController implements Initializable {
 
     @FXML
     private TableColumn<BorrowerBean, String> borrowerAddressColumn;
+
+    @FXML
+    private JFXTextField borrowerBarcode;
 
     @FXML
     private JFXTextField borrowerTitle;
@@ -119,6 +123,10 @@ public class ManageBorrowerController implements Initializable {
 
     @FXML
     private JFXButton submitFormBtn;
+
+    @FXML
+    private JFXButton clearFieldsBtn;
+
     private EntityManagerFactory emf;
     private EntityManager em;
     private BorrowerFacade borrowerFacade;
@@ -129,6 +137,9 @@ public class ManageBorrowerController implements Initializable {
     private ContextMenu contextMenu;
     private Borrower currentSelectedBorrower;
     private ArrayList<String> errorMessages = new ArrayList<>();
+    private RequiredFieldValidator borrowerBarcodeValidator;
+    private static Scenario CURRENT_SCENARIO = Scenario.NEW_RECORD;
+    private UniqueBorrowerBarcodeValidator uniqueBorrowerBarcodeValidator;
 
     @FXML
     void filterBorrowerRecord(ActionEvent event) {
@@ -138,6 +149,8 @@ public class ManageBorrowerController implements Initializable {
     @FXML
     void submitForm(ActionEvent event) {
         this.errorMessages.clear();
+        this.uniqueBorrowerBarcodeValidator.setScenario(ManageBorrowerController.CURRENT_SCENARIO);
+        this.uniqueBorrowerBarcodeValidator.setCurrentBorrower(this.currentSelectedBorrower);
         for (IFXTextInputControl formField : formFields) {
             formField.validate();
             if (formField instanceof JFXTextField) {
@@ -156,7 +169,7 @@ public class ManageBorrowerController implements Initializable {
             if (this.currentSelectedBorrower != null) {
                 updateRecord();// using the currentbook as current selected object
             } else {
-                createNewBook();
+                createNewBorrower();
             }
         } else {
             // show error message
@@ -203,6 +216,14 @@ public class ManageBorrowerController implements Initializable {
     }
 
     private void initializeValidators() {
+        this.borrowerBarcodeValidator = new RequiredFieldValidator();
+        this.borrowerBarcodeValidator.setMessage("Student ID is required");
+        this.borrowerBarcodeValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
+
+        this.uniqueBorrowerBarcodeValidator = new UniqueBorrowerBarcodeValidator();
+        this.uniqueBorrowerBarcodeValidator.setMessage("Barcode number is taken");
+        this.uniqueBorrowerBarcodeValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
+
         this.borrowerTitleValidator = new RequiredFieldValidator();
         this.borrowerTitleValidator.setMessage("Title is required");
         this.borrowerTitleValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
@@ -218,10 +239,11 @@ public class ManageBorrowerController implements Initializable {
     }
 
     private void registerValidator() {
+        this.borrowerBarcode.getValidators().add(this.borrowerBarcodeValidator);
+        this.borrowerBarcode.getValidators().add(this.uniqueBorrowerBarcodeValidator);
         this.borrowerTitle.getValidators().add(this.borrowerTitleValidator);
         this.borrowerFirstname.getValidators().add(this.firstNameRequiredValidator);
         this.borrowerLastname.getValidators().add(this.lastNameRequiredValidator);
-
         this.borrowerBirthday.setDayCellFactory(new Callback<DatePicker, DateCell>() {
             @Override
             public DateCell call(DatePicker param) {
@@ -241,6 +263,7 @@ public class ManageBorrowerController implements Initializable {
     }
 
     private void registerFormFields() {
+        this.formFields.add(borrowerBarcode);
         this.formFields.add(borrowerTitle);
         this.formFields.add(borrowerFirstname);
         this.formFields.add(borrowerLastname);
@@ -254,6 +277,7 @@ public class ManageBorrowerController implements Initializable {
         deleteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                ManageBorrowerController.CURRENT_SCENARIO = Scenario.NEW_RECORD;
                 // show confirmation modal
                 Alert confirmDeletion = new Alert(Alert.AlertType.CONFIRMATION);
                 confirmDeletion.setTitle("Delete record");
@@ -292,12 +316,15 @@ public class ManageBorrowerController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 // Get the selected item from table
+                ManageBorrowerController.CURRENT_SCENARIO = Scenario.UPDATE_OLD_RECORD;
                 BorrowerBean selectedBorrower = borrowerTableGrid.getSelectionModel().getSelectedItem();
                 if (selectedBorrower != null) {
                     // retrieve information
                     Borrower foundBorrower = borrowerFacade.findBorrower(selectedBorrower.getBorrowerId());
                     currentSelectedBorrower = foundBorrower;
                     // load the information to the text box 
+                    DecimalFormat df = new DecimalFormat("#");
+                    borrowerBarcode.setText(df.format(foundBorrower.getBorrowerBarcode()));
                     borrowerTitle.setText(foundBorrower.getTitle());
                     borrowerFirstname.setText(foundBorrower.getFirstname());
                     borrowerLastname.setText(foundBorrower.getLastname());
@@ -386,6 +413,8 @@ public class ManageBorrowerController implements Initializable {
     }
 
     private void updateRecord() {
+        Double updatedBarcodeVal = Double.parseDouble(borrowerBarcode.getText());
+        currentSelectedBorrower.setBorrowerBarcode(updatedBarcodeVal);
         currentSelectedBorrower.setTitle(borrowerTitle.getText());
         currentSelectedBorrower.setFirstname(borrowerFirstname.getText());
         currentSelectedBorrower.setLastname(borrowerLastname.getText());
@@ -423,8 +452,10 @@ public class ManageBorrowerController implements Initializable {
         this.currentSelectedBorrower = null;
     }
 
-    private void createNewBook() {
+    private void createNewBorrower() {
         Borrower newBorrower = new Borrower();
+        Double borrowerBarcodeVal = Double.parseDouble(borrowerBarcode.getText());
+        newBorrower.setBorrowerBarcode(borrowerBarcodeVal);
         newBorrower.setTitle(borrowerTitle.getText());
         newBorrower.setFirstname(borrowerFirstname.getText());
         newBorrower.setLastname(borrowerLastname.getText());
@@ -463,6 +494,7 @@ public class ManageBorrowerController implements Initializable {
     }
 
     private void clearFields() {
+        borrowerBarcode.setText("");
         borrowerTitle.setText("");
         borrowerFirstname.setText("");
         borrowerLastname.setText("");
@@ -474,5 +506,13 @@ public class ManageBorrowerController implements Initializable {
         borrowerMobileNumber.setText("");
         borrowerEmailAddress.setText("");
         borrowerGenderMale.setSelected(true);
+        this.currentSelectedBorrower = null;
+        ManageBorrowerController.CURRENT_SCENARIO = Scenario.NEW_RECORD;
+    }
+
+    @FXML
+    void clearAllFields(ActionEvent event) {
+        this.currentSelectedBorrower = null;
+        this.clearFields();
     }
 }

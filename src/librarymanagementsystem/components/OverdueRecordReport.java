@@ -27,8 +27,6 @@ public class OverdueRecordReport {
         this.emf = emf;
     }
 
-    
-    // @TODO
     public List<BookBorrower> getOverdueReport() {
         TypedQuery<BookBorrower> query = this.em.createNamedQuery("BookBorrower.findOverduedBook", BookBorrower.class);
         query.setHint("javax.persistence.cache.storeMode", "REFRESH");

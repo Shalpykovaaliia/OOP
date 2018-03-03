@@ -126,7 +126,7 @@ public class ReturnBookController implements Initializable {
                 payOverDueFees(curBookBorrowed);
                 // set date of return
                 curBookBorrowed.setDateReturned(new Date());
-                setToAvailable(curBookBorrowed.getBookId());
+                setToAvailable(curBookBorrowed.getBook());
                 try {
                     //update the the Book Borrowed
                     this.bookBorrowerJpaController.edit(curBookBorrowed);
@@ -248,7 +248,7 @@ public class ReturnBookController implements Initializable {
         for (Iterator<BookBorrower> iterator = booksBorrowered.iterator(); iterator.hasNext();) {
             BookBorrower next = iterator.next();
             BookBorrowedBean bookBorrowedBean = new BookBorrowedBean();
-            Books foundBook = this.bookFacade.findBooks(next.getBookId());
+            Books foundBook = next.getBook();
             bookBorrowedBean.setBookId(foundBook.getBookId());
             bookBorrowedBean.setBookTitle(foundBook.getTitle());
             bookBorrowedBean.setBookOverDueTime("" + (getOverDueDay(next)) + " day(s)");
@@ -383,15 +383,14 @@ public class ReturnBookController implements Initializable {
     }
 
     // Update book availability to available
-    private void setToAvailable(int bookId) {
+    private void setToAvailable(Books bookToUpdate) {
         // find the book.
         Books foundBook = null;
         try {
-            foundBook = bookFacade.findBooks(bookId);
-            foundBook.setAvailability(Books.AVAILABLE_STATUS);
-            bookFacade.edit(foundBook);
+            bookToUpdate.setAvailability(Books.AVAILABLE_STATUS);
+            bookFacade.edit(bookToUpdate);
         } catch (Exception ex) {
-            Logger.getLogger(ReturnBookController.class.getName()).log(Level.INFO, "Cant set the availability of book. Book #" + bookId);
+            Logger.getLogger(ReturnBookController.class.getName()).log(Level.INFO, "Cant set the availability of book. Book #" + bookToUpdate.toString());
         }
         // set availability.
     }

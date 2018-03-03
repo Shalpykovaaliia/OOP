@@ -46,7 +46,7 @@ public class LibraryManagementSystem extends Application {
     public static String API_CODE = "";
     public static String SMS_NOTIFICATION_STATUS = "";
     public static String SMS_SENDER_NAME = "";
-
+    public static double BOOK_PENALTY_PER_DAY= 2;
     @Override
     public void start(Stage primaryStage) {
         APP_ROOT_PANE = primaryStage;

@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Borrower.findAll", query = "SELECT b FROM Borrower b")
     , @NamedQuery(name = "Borrower.findByBorrowerId", query = "SELECT b FROM Borrower b WHERE b.borrowerId = :borrowerId")
+    , @NamedQuery(name = "Borrower.findByBarcode", query = "SELECT b FROM Borrower b WHERE b.borrowerBarcodeId = :borrowerBarcode")
     , @NamedQuery(name = "Borrower.findByTitle", query = "SELECT b FROM Borrower b WHERE b.title = :title")
     , @NamedQuery(name = "Borrower.findByFirstname", query = "SELECT b FROM Borrower b WHERE b.firstname = :firstname")
     , @NamedQuery(name = "Borrower.findByLastname", query = "SELECT b FROM Borrower b WHERE b.lastname = :lastname")
@@ -49,6 +50,10 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Borrower.findByMobileNumber", query = "SELECT b FROM Borrower b WHERE b.mobileNumber = :mobileNumber")
     , @NamedQuery(name = "Borrower.findByEmailAddress", query = "SELECT b FROM Borrower b WHERE b.emailAddress = :emailAddress")})
 public class Borrower implements Serializable {
+
+    @Basic(optional = false)
+    @Column(name = "borrower_barcode_id")
+    private double borrowerBarcodeId;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -110,7 +115,7 @@ public class Borrower implements Serializable {
     public void setBorrowerId(Integer borrowerId) {
         this.borrowerId = borrowerId;
     }
-
+    
     public String getTitle() {
         return title;
     }
@@ -237,8 +242,8 @@ public class Borrower implements Serializable {
         if (!(object instanceof Borrower)) {
             return false;
         }
-        Borrower other = (Borrower) object;
-        if ((this.borrowerId == null && other.borrowerId != null) || (this.borrowerId != null && !this.borrowerId.equals(other.borrowerId))) {
+        Borrower other = (Borrower) object; 
+       if ((this.borrowerId == null && other.borrowerId != null) || (this.borrowerId != null && !this.borrowerId.equals(other.borrowerId))) {
             return false;
         }
         return true;
@@ -247,6 +252,14 @@ public class Borrower implements Serializable {
     @Override
     public String toString() {
         return "librarymanagementsystem.models.Borrower[ borrowerId=" + borrowerId + " ]";
+    }
+
+    public double getBorrowerBarcode() {
+        return borrowerBarcodeId;
+    }
+
+    public void setBorrowerBarcode(double borrowerBarcodeId) {
+        this.borrowerBarcodeId = borrowerBarcodeId;
     }
 
 }

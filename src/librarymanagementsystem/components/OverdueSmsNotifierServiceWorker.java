@@ -53,7 +53,7 @@ public class OverdueSmsNotifierServiceWorker extends Service<ObservableList<Stri
 
     @Override
     protected Task<ObservableList<String>> createTask() {
-        // @TODO - do the searching and notifying here
+        // Searching and notifying here
         Task<ObservableList<String>> smsNotifyTask = new Task<ObservableList<String>>() {
             @Override
             protected ObservableList<String> call() throws InterruptedException {
@@ -83,8 +83,8 @@ public class OverdueSmsNotifierServiceWorker extends Service<ObservableList<Stri
         Logger.getLogger(OverdueRecordReport.class.getName()).log(Level.INFO, "Overdued books found : " + overduedBooks.size());
         for (Iterator<BookBorrower> iterator = overduedBooks.iterator(); iterator.hasNext();) {
             BookBorrower curBookBorrower = iterator.next();
-            Borrower currentBorrower = curBookBorrower.getBorrowerId();
-            Books foundBook = bookFacade.findBooks(curBookBorrower.getBookId());
+            Borrower currentBorrower = curBookBorrower.getBorrower();
+            Books foundBook = curBookBorrower.getBook();
             // sms notification not yet sent
             Logger.getLogger(OverdueRecordReport.class.getName()).log(Level.INFO, "Checking notification log.");
             if (!smsNotificationSent(curBookBorrower)) {

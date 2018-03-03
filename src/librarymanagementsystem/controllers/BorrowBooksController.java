@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -38,26 +39,24 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import librarymanagementsystem.BookNotAvailable;
-import librarymanagementsystem.BookNotFoundException;
+import javax.swing.JTextField;
+import librarymanagementsystem.exceptions.BookNotAvailable;
+import librarymanagementsystem.exceptions.BookNotFoundException;
 import librarymanagementsystem.LibraryManagementSystem;
 import librarymanagementsystem.beans.BookBorrowedBean;
 import librarymanagementsystem.facade.BookBorrowerJpaController;
 import librarymanagementsystem.facade.BooksFacade;
+import librarymanagementsystem.facade.BorrowerJpaController;
 import librarymanagementsystem.models.BookBorrower;
 import librarymanagementsystem.models.Books;
 import librarymanagementsystem.models.Borrower;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-import org.controlsfx.control.textfield.TextFields;
-import org.eclipse.persistence.config.HintValues;
-import org.eclipse.persistence.config.QueryHints;
 import org.eclipse.persistence.jpa.JpaEntityManager;
 
 /**
@@ -120,6 +119,7 @@ public class BorrowBooksController implements Initializable {
     private BooksFacade bookFacade;
     private Borrower currentBorrowerSelected;
     private HashSet<BookBorrowedBean> booksBorrowedBeanCollection = new HashSet<>();
+    private BorrowerJpaController borrowerFacade;
 
     @FXML
     void addBook(ActionEvent event) {
@@ -157,7 +157,7 @@ public class BorrowBooksController implements Initializable {
             bookBorrower.setDateBorrowed(new Date());
             Date tempReturnDateContainer = Date.from(returnDateField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
             bookBorrower.setExpectedReturnDate(tempReturnDateContainer);
-            bookBorrower.setBorrowerId(currentBorrowerSelected);
+            bookBorrower.setBorrower(currentBorrowerSelected);
 
             Alert saveRecordAlert = new Alert(Alert.AlertType.CONFIRMATION);
             saveRecordAlert.setTitle("Save");
@@ -170,7 +170,8 @@ public class BorrowBooksController implements Initializable {
                     ObservableList<BookBorrowedBean> booksToBorrow = bookBorrowedTable.getItems();
                     for (Iterator<BookBorrowedBean> iterator = booksToBorrow.iterator(); iterator.hasNext();) {
                         BookBorrowedBean currentBookBean = iterator.next();
-                        bookBorrower.setBookId(currentBookBean.getBookId());
+                        Books foundBookModel = this.bookFacade.findBooks(currentBookBean.getBookId());
+                        bookBorrower.setBook(foundBookModel);
                         this.bookBorrowerJpaController.create(bookBorrower);
                         //change the availability to unavailable
                         this.setToUnavailable(currentBookBean.getBookId());
@@ -248,9 +249,30 @@ public class BorrowBooksController implements Initializable {
 
         }
     }
-
     @FXML
     void selectCurrentBorrower(ActionEvent event) {
+        // get the barcode id 
+        Logger.getLogger(BorrowBooksController.class.getName()).log(Level.INFO, "Searching for borrower");
+        JFXTextField studentIdBarcode = (JFXTextField) event.getSource();
+        Logger.getLogger(BorrowBooksController.class.getName()).log(Level.INFO, "Looking for " + studentIdBarcode.getText());
+        Integer studentId = new Integer(Integer.parseInt(studentIdBarcode.getText()));
+        TypedQuery<Borrower> query = this.em.createNamedQuery("Borrower.findByBarcode", Borrower.class);
+        query.setParameter("borrowerBarcode", Double.parseDouble(studentIdBarcode.getText()));
+        try {
+            Borrower borrowerFound = query.getSingleResult();
+            DecimalFormat df = new DecimalFormat("#");
+            borrowerIdentificationId.setText(df.format(borrowerFound.getBorrowerBarcode()));
+            String borrowerFullName = borrowerFound.getTitle() + " " + borrowerFound.getFirstname() + " " + borrowerFound.getLastname();
+            borrowerName.setText(borrowerFullName);
+            borrowerContactInformation.setText(borrowerFound.getMobileNumber());
+            this.currentBorrowerSelected = borrowerFound;
+        } catch (javax.persistence.NoResultException ex) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("No record");
+            errorAlert.setTitle("No record found");
+            errorAlert.setContentText("We can't find a borrower with student id : " + studentIdBarcode.getText());
+            errorAlert.showAndWait();
+        }
     }
 
     /**
@@ -261,12 +283,12 @@ public class BorrowBooksController implements Initializable {
         this.emf = librarymanagementsystem.LibraryManagementSystem.APP_ENTITY_MANAGER_FACTORY;
         this.em = emf.createEntityManager();
         this.bookBorrowerJpaController = new BookBorrowerJpaController(emf);
+        this.borrowerFacade = new BorrowerJpaController(emf);
         this.bookFacade = new BooksFacade(emf);
         this.setOnFocusListener();
         this.restrictDatepickerMinDate();
         this.initializeContextMenu();
         this.initializeBookToBeBorrowedTable();
-        this.loadBorrowersCollection();
     }
 
     private Books getBook(String inputCode) throws BookNotFoundException, BookNotAvailable {
@@ -318,32 +340,6 @@ public class BorrowBooksController implements Initializable {
             }
         });
         this.tableContextMenu.getItems().add(deleteMenuItem);
-    }
-
-    private void loadBorrowersCollection() {
-        //find all borrowers
-        Query namedQuery = em.createNamedQuery("Borrower.findAll");
-        namedQuery.setHint(QueryHints.REFRESH, HintValues.TRUE);
-        List<Borrower> borrowers = namedQuery.getResultList();
-        List<String> nameCollection = new ArrayList<>();
-
-        for (Iterator<Borrower> iterator = borrowers.iterator(); iterator.hasNext();) {
-            Borrower tempBorrower = iterator.next();
-            StringBuilder fullName = new StringBuilder();
-            fullName.append(tempBorrower.getTitle())
-                    .append(" ")
-                    .append(tempBorrower.getFirstname())
-                    .append(" ")
-                    .append(tempBorrower.getLastname());
-            nameCollection.add(fullName.toString());
-        }
-        AutoCompletionBinding<String> acb = TextFields.bindAutoCompletion(filterBorrowerField, nameCollection);
-        acb.setOnAutoCompleted(new EventHandler<AutoCompletionBinding.AutoCompletionEvent<String>>() {
-            @Override
-            public void handle(AutoCompletionBinding.AutoCompletionEvent<String> event) {
-                setSelectedBorrower(event.getCompletion());
-            }
-        });
     }
 
     private void setSelectedBorrower(String borrowersFullName) {
