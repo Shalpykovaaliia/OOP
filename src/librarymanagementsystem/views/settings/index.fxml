@@ -13,7 +13,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="589.0" prefWidth="732.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="librarymanagementsystem.controllers.SettingsController">
    <children>
-      <BorderPane layoutX="38.0" prefHeight="722.0" prefWidth="825.0" AnchorPane.bottomAnchor="-120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane layoutX="38.0" prefHeight="589.0" prefWidth="732.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <AnchorPane prefHeight="84.0" prefWidth="854.0" style="-fx-background-color: #2895F8;" BorderPane.alignment="CENTER">
                <children>
@@ -51,13 +51,13 @@
             </AnchorPane>
          </top>
          <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <AnchorPane prefHeight="642.0" prefWidth="732.0" BorderPane.alignment="CENTER">
                <children>
-                  <VBox prefHeight="242.0" prefWidth="632.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox prefHeight="652.0" prefWidth="732.0" AnchorPane.bottomAnchor="-18.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
+                        <AnchorPane prefHeight="520.0" prefWidth="632.0" style="-fx-background-color: white;">
                            <children>
-                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <VBox layoutY="-28.0" prefHeight="485.0" prefWidth="632.0" spacing="20.0" AnchorPane.bottomAnchor="-11.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Label style="-fx-margin: 50px;" text="System Settings">
                                        <font>
@@ -73,6 +73,11 @@
                                        </padding>
                                     </JFXTextField>
                                     <JFXTextField fx:id="smsSenderName" labelFloat="true" layoutX="10.0" layoutY="100.0" promptText="SMS Sender Name">
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                    </JFXTextField>
+                                    <JFXTextField fx:id="penaltyPerDay" labelFloat="true" promptText="Penalty Per Day">
                                        <padding>
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                        </padding>
