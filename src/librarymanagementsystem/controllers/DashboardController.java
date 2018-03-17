@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -296,7 +297,6 @@ public class DashboardController implements Initializable {
     @FXML
     void showCurrentOverdueBookAndBorrower(MouseEvent event) {
         if (event.getClickCount() == 2) {
-            //@TODO - 
             // make the overdue available in class
             String selectedOverdueBook = this.overdueBooksListView.getSelectionModel().getSelectedItem();
             Set<Books> tempKeyContainer = this.overduedBooksMap.keySet();
@@ -321,11 +321,12 @@ public class DashboardController implements Initializable {
             Text bookText = new Text("Book : " + tempBooksContainer.getTitle());
             Text computerFeeText = new Text("Penalty : P " + tempBookBorrower.getComputerFee() + ".00");
             Text daysOverdueText = new Text("Overdue : " + tempBookBorrower.getOverDueDays() + " day(s)");
+            Text expectedReturnDate = new Text("Return Date : " + new SimpleDateFormat("EEE, MMM d, yyyy").format(tempBookBorrower.getExpectedReturnDate()));
             informationContainer.getChildren().add(borrowerText);
             informationContainer.getChildren().add(bookText);
             informationContainer.getChildren().add(computerFeeText);
             informationContainer.getChildren().add(daysOverdueText);
-
+            informationContainer.getChildren().add(expectedReturnDate);
             showBorrower.setTitle(" ");
             showBorrower.setContentNode(informationContainer);
             showBorrower.show(overdueBooksListView, overdueBooksListView.getScaleX() + overdueBooksListView.getWidth() + 920, event.getSceneY() + 38);
