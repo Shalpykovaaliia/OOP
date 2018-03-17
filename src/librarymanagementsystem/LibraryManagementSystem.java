@@ -87,11 +87,12 @@ public class LibraryManagementSystem extends Application {
     }
 
     public static AnchorPane showView(String viewName) {
-        APP_ROOT_PANE.hide();
         AnchorPane returnedViewed = APPLICATION_VIEW.get(viewName);
         Scene scene = APP_ROOT_PANE.getScene();
         scene.setRoot(returnedViewed);
         APP_ROOT_PANE.setScene(scene);
+        APP_ROOT_PANE.sizeToScene();
+        APP_ROOT_PANE.centerOnScreen();
         RECENT_PANE_HISTORY.add(returnedViewed);
         LibraryManagementSystem.APP_ROOT_PANE.show();
         return returnedViewed;
@@ -159,6 +160,8 @@ public class LibraryManagementSystem extends Application {
         LibraryManagementSystem.API_CODE = settingsRetriever.getApiCode();
         LibraryManagementSystem.SMS_NOTIFICATION_STATUS = settingsRetriever.getNotificationStatus();
         LibraryManagementSystem.SMS_SENDER_NAME = settingsRetriever.getSmsSenderName();
+        LibraryManagementSystem.BOOK_PENALTY_PER_DAY = settingsRetriever.getPenaltyPerDay();
+        Logger.getLogger(LibraryManagementSystem.class.getName()).log(Level.INFO, "LibraryManagementSystem.BOOK_PENALTY_PER_DAY : "+LibraryManagementSystem.BOOK_PENALTY_PER_DAY);
         // done
     }
 
