@@ -67,7 +67,7 @@
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                        </padding>
                                     </Label>
-                                    <JFXTextField fx:id="smsApicode" labelFloat="true" promptText="SMS API Code">
+                                    <JFXTextField fx:id="smsApicode" labelFloat="true" prefHeight="25.0" prefWidth="632.0" promptText="SMS API Code">
                                        <padding>
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                        </padding>
