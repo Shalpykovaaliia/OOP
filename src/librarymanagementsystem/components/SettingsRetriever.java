@@ -71,4 +71,19 @@ public class SettingsRetriever {
             return notificationStatus.getSettingValue();
         }
     }
+
+    public double getPenaltyPerDay() {
+        TypedQuery<Setting> query = em.createNamedQuery("Setting.penaltyPerDay", Setting.class);
+        Setting returnedSetting = null;
+        try {
+            returnedSetting = query.getSingleResult();
+            return Double.parseDouble(returnedSetting.getSettingValue());
+        } catch (javax.persistence.NoResultException ex) {
+            Setting penaltyPerDaySetting = new Setting();
+            penaltyPerDaySetting.setSettingName("BOOK_PENALTY_PER_DAY");
+            penaltyPerDaySetting.setSettingValue("2");
+            this.settingsFacade.create(penaltyPerDaySetting);
+            return 2;
+        }
+    }
 }

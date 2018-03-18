@@ -320,7 +320,7 @@ public class ManageBorrowerController implements Initializable {
                 BorrowerBean selectedBorrower = borrowerTableGrid.getSelectionModel().getSelectedItem();
                 if (selectedBorrower != null) {
                     // retrieve information
-                    Borrower foundBorrower = borrowerFacade.findBorrower(selectedBorrower.getBorrowerId());
+                    Borrower foundBorrower = borrowerFacade.findBorrowerByBarcode(selectedBorrower.getBorrowerId());
                     currentSelectedBorrower = foundBorrower;
                     // load the information to the text box 
                     DecimalFormat df = new DecimalFormat("#");
@@ -368,7 +368,7 @@ public class ManageBorrowerController implements Initializable {
             Borrower currentBorrowerIter = iterator.next();
             BorrowerBean tempBorrower = new BorrowerBean();
             //id
-            tempBorrower.setBorrowerId(currentBorrowerIter.getBorrowerId());
+            tempBorrower.setBorrowerId((int) currentBorrowerIter.getBorrowerBarcode());
             //name
             StringBuilder borrowerFullName = new StringBuilder();
             borrowerFullName

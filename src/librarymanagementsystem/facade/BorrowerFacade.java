@@ -11,10 +11,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.models.Borrower;
+import org.eclipse.persistence.config.HintValues;
+import org.eclipse.persistence.config.QueryHints;
 
 /**
  *
@@ -122,6 +125,19 @@ public class BorrowerFacade implements Serializable {
         }
     }
 
+    public Borrower findBorrowerByBarcode(Integer borrowerBarcode) {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Borrower> query = em.createNamedQuery("Borrower.findByBarcode", Borrower.class);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(QueryHints.REFRESH, HintValues.TRUE);
+            query.setParameter("borrowerBarcode", borrowerBarcode);
+            return query.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+
     public int getBorrowerCount() {
         EntityManager em = getEntityManager();
         try {
@@ -134,5 +150,5 @@ public class BorrowerFacade implements Serializable {
             em.close();
         }
     }
-    
+
 }

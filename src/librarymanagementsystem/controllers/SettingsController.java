@@ -30,6 +30,7 @@ import librarymanagementsystem.components.SettingsRetriever;
 import librarymanagementsystem.facade.SettingFacade;
 import librarymanagementsystem.models.BookBorrower;
 import librarymanagementsystem.models.Setting;
+import librarymanagementsystem.validator.IntegerFieldValidator;
 
 /**
  * FXML Controller class
@@ -47,6 +48,9 @@ public class SettingsController implements Initializable {
     @FXML
     private JFXRadioButton enableSMSNotification;
 
+    @FXML
+    private JFXTextField penaltyPerDay;
+
     private EntityManager em;
 
     private EntityManagerFactory emf;
@@ -56,6 +60,10 @@ public class SettingsController implements Initializable {
     private RequiredFieldValidator smsApiCodeValidator;
 
     private RequiredFieldValidator smsSenderNameValidator;
+
+    private RequiredFieldValidator requiredPenaltyPerDayValidator;
+
+    private IntegerFieldValidator numberFieldPenaltyPerDayValidator;
 
     private ArrayList<IFXTextInputControl> formFields = new ArrayList<>();
 
@@ -70,12 +78,13 @@ public class SettingsController implements Initializable {
     void saveSettings(ActionEvent event) {
         String smsApiCode = "", senderName = "", smsNotificationStatus = "";
         this.validateFields();
-        Logger.getLogger(SettingsController.class.getName()).log(Level.INFO, "Is error message empty? "+this.errorMessages.isEmpty());
         if (this.errorMessages.isEmpty()) {
             smsApiCode = smsApicode.getText();
             senderName = smsSenderName.getText();
+            double penaltyPerDayVal = Double.parseDouble(this.penaltyPerDay.getText());
             this.saveApiCode(smsApiCode);
             this.saveSenderName(senderName);
+            this.savePenaltyPerDay(penaltyPerDayVal);
             if (this.enableSMSNotification.isSelected()) {
                 smsNotificationStatus = "enabled";
             } else {
@@ -86,7 +95,7 @@ public class SettingsController implements Initializable {
             Alert successMessage = new Alert(Alert.AlertType.INFORMATION);
             successMessage.setTitle("Saved");
             successMessage.setHeaderText("Settings saved");
-            successMessage.setContentText("Application settings saved");
+            successMessage.setContentText("Application settings saved. Please restart the application to load the updated settings. ");
             successMessage.showAndWait();
         } else {
             // show error message
@@ -106,7 +115,7 @@ public class SettingsController implements Initializable {
             validationErrorMessage.setContentText(errorMessStr);
             validationErrorMessage.showAndWait();
         }
-        
+
     }
 
     @Override
@@ -114,11 +123,12 @@ public class SettingsController implements Initializable {
         this.emf = librarymanagementsystem.LibraryManagementSystem.APP_ENTITY_MANAGER_FACTORY;
         this.em = emf.createEntityManager();
         this.settingsFacade = new SettingFacade(emf);
-        
+
         //disable changing of sender name
         this.smsSenderName.setEditable(false);
 
         this.setNotificationStatusValue();
+        this.setPenaltyPerDayValue();
         this.initializeValidators();
         this.registerValidator();
         this.registerFormFields();
@@ -167,12 +177,20 @@ public class SettingsController implements Initializable {
 
     private void initializeValidators() {
         smsApiCodeValidator = new RequiredFieldValidator();
-        smsApiCodeValidator.setMessage("ISBN is required");
+        smsApiCodeValidator.setMessage("SMS API is required");
         smsApiCodeValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
 
         smsSenderNameValidator = new RequiredFieldValidator();
-        smsSenderNameValidator.setMessage("ISBN is required");
+        smsSenderNameValidator.setMessage("SMS Sender is required");
         smsSenderNameValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
+
+        requiredPenaltyPerDayValidator = new RequiredFieldValidator();
+        requiredPenaltyPerDayValidator.setMessage("ISBN is required");
+        requiredPenaltyPerDayValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
+
+        numberFieldPenaltyPerDayValidator = new IntegerFieldValidator();
+        numberFieldPenaltyPerDayValidator.setMessage("Numbers only");
+        numberFieldPenaltyPerDayValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
 
     }
 
@@ -198,11 +216,14 @@ public class SettingsController implements Initializable {
     private void registerValidator() {
         this.smsApicode.getValidators().add(smsApiCodeValidator);
         this.smsSenderName.getValidators().add(smsSenderNameValidator);
+        this.penaltyPerDay.getValidators().add(requiredPenaltyPerDayValidator);
+        this.penaltyPerDay.getValidators().add(numberFieldPenaltyPerDayValidator);
     }
 
     private void registerFormFields() {
         this.formFields.add(this.smsApicode);
         this.formFields.add(this.smsSenderName);
+        this.formFields.add(this.penaltyPerDay);
     }
 
     private void validateFields() {
@@ -221,17 +242,41 @@ public class SettingsController implements Initializable {
         }
     }
 
-
     private void setDefaultValues() {
         SettingsRetriever settingRetriever = new SettingsRetriever();
         this.smsApicode.setText(settingRetriever.getApiCode());
         this.smsSenderName.setText(settingRetriever.getSmsSenderName());
-        if(settingRetriever.getNotificationStatus().equals("enabled")){
+        if (settingRetriever.getNotificationStatus().equals("enabled")) {
             this.enableSMSNotification.setSelected(true);
-        }else{
+        } else {
             this.enableSMSNotification.setSelected(false);
         }
-        
+
+    }
+
+    private void savePenaltyPerDay(double penaltyPerDayVal) {
+        TypedQuery<Setting> query = em.createNamedQuery("Setting.penaltyPerDay", Setting.class);
+        try {
+            Setting returnedSetting = query.getSingleResult();
+            returnedSetting.setSettingValue(penaltyPerDayVal + "");
+            // update the setting
+            this.settingsFacade.edit(returnedSetting);
+        } catch (Exception ex) {
+            Logger.getLogger(SettingsController.class.getName()).log(Level.SEVERE, ex.getMessage());
+            Logger.getLogger(SettingsController.class.getName()).log(Level.SEVERE, ex.getCause().getMessage());
+        }
+    }
+
+    private void setPenaltyPerDayValue() {
+        TypedQuery<Setting> query = em.createNamedQuery("Setting.penaltyPerDay", Setting.class);
+        try {
+            Setting returnedSetting = query.getSingleResult();
+            penaltyPerDay.setText(returnedSetting.getSettingValue());
+        } catch (Exception ex) {
+            enableSMSNotification.setSelected(false);
+            Logger.getLogger(SettingsController.class.getName()).log(Level.SEVERE, ex.getMessage());
+            Logger.getLogger(SettingsController.class.getName()).log(Level.SEVERE, ex.getCause().getMessage());
+        }
     }
 
 }

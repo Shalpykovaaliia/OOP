@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Setting.smsApiCode", query = "SELECT s FROM Setting s WHERE s.settingName = 'SMS_API_CODE'")
     , @NamedQuery(name = "Setting.smsSenderName", query = "SELECT s FROM Setting s WHERE s.settingName = 'SMS_SENDER_NAME'")
     , @NamedQuery(name = "Setting.notificationStatus", query = "SELECT s FROM Setting s WHERE s.settingName = 'NOTIFICATION_STATUS'")
+    , @NamedQuery(name = "Setting.penaltyPerDay", query = "SELECT s FROM Setting s WHERE s.settingName = 'BOOK_PENALTY_PER_DAY'")
     , @NamedQuery(name = "Setting.findBySettingValue", query = "SELECT s FROM Setting s WHERE s.settingValue = :settingValue")})
 public class Setting implements Serializable {
 

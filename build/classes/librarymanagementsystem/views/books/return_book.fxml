@@ -157,7 +157,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Text>
-                        <JFXTextField fx:id="borrowerNameField" labelFloat="true" prefWidth="224.0" promptText="Borrower name" />
+                        <JFXTextField fx:id="borrowerNameField" labelFloat="true" onAction="#findBorrowerbyId" prefWidth="224.0" promptText="Borrower ID #" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Borrower Information" wrappingWidth="324.13671875">
                            <font>
                               <Font name="System Bold" size="15.0" />

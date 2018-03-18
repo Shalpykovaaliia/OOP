@@ -158,29 +158,15 @@ public class ReturnBookController implements Initializable {
         this.bookFacade = new BooksFacade(emf);
         this.bookOverDueFacade = new BookOverdueJpaController(emf);
         // Load names of borrowed in borrowerNameField
-        this.loadBorrowersCollection();
         this.setTodaysDate();
         this.initializeBooksBorrowedTable();
 
     }
 
-    private void loadBorrowersCollection() {
-        //find all borrowers
-        Query namedQuery = em.createNamedQuery("Borrower.findAll");
-        namedQuery.setHint(QueryHints.REFRESH, HintValues.TRUE);
-        List<Borrower> borrowers = namedQuery.getResultList();
-        List<String> nameCollection = new ArrayList<>();
-        for (Iterator<Borrower> iterator = borrowers.iterator(); iterator.hasNext();) {
-            Borrower tempBorrower = iterator.next();
-            StringBuilder fullName = new StringBuilder();
-            fullName.append(tempBorrower.getTitle())
-                    .append(" ")
-                    .append(tempBorrower.getFirstname())
-                    .append(" ")
-                    .append(tempBorrower.getLastname());
-            nameCollection.add(fullName.toString());
-        }
-        this.bindAutoCompleteBorrowerName(nameCollection);
+    @FXML
+    void findBorrowerbyId(ActionEvent event) {
+        int borrowerBarcodeId = Integer.parseInt(borrowerNameField.getText());
+        this.setSelectedBorrower(borrowerBarcodeId);
     }
 
     private Boolean hasBorrowedBooks(Borrower foundBorrower) {
@@ -201,12 +187,12 @@ public class ReturnBookController implements Initializable {
         return false;
     }
 
-    private void setSelectedBorrower(String borrowersFullName) {
+    private void setSelectedBorrower(int borrowerBarcodeId) {
         // search the database for borrower having this borrowersFullName 
-        TypedQuery<Borrower> findBorrower = em.createNamedQuery("Borrower.findByFullname", Borrower.class);
+        TypedQuery<Borrower> findBorrower = em.createNamedQuery("Borrower.findByBarcode", Borrower.class);
         findBorrower.setHint("javax.persistence.cache.storeMode", "REFRESH");
         findBorrower.setHint(QueryHints.REFRESH, HintValues.TRUE);
-        findBorrower.setParameter("fullName", borrowersFullName);
+        findBorrower.setParameter("borrowerBarcode", borrowerBarcodeId);
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         try {
             Borrower foundBorrower = findBorrower.getSingleResult();
@@ -245,14 +231,21 @@ public class ReturnBookController implements Initializable {
         List<BookBorrower> booksBorrowered = findBorrowedBooksQuery.getResultList();
         this.currentBooksBorrowed = booksBorrowered;
         booksBorrowedTable.getItems().clear();
-        for (Iterator<BookBorrower> iterator = booksBorrowered.iterator(); iterator.hasNext();) {
-            BookBorrower next = iterator.next();
-            BookBorrowedBean bookBorrowedBean = new BookBorrowedBean();
-            Books foundBook = next.getBook();
-            bookBorrowedBean.setBookId(foundBook.getBookId());
-            bookBorrowedBean.setBookTitle(foundBook.getTitle());
-            bookBorrowedBean.setBookOverDueTime("" + (getOverDueDay(next)) + " day(s)");
-            booksBorrowedTable.getItems().add(bookBorrowedBean);
+        if (!booksBorrowered.isEmpty()) {
+            for (BookBorrower next : booksBorrowered) {
+                BookBorrowedBean bookBorrowedBean = new BookBorrowedBean();
+                Books foundBook = next.getBook();
+                bookBorrowedBean.setBookId(foundBook.getBookId());
+                bookBorrowedBean.setBookTitle(foundBook.getTitle());
+                bookBorrowedBean.setBookOverDueTime("" + (getOverDueDay(next)) + " day(s)");
+                booksBorrowedTable.getItems().add(bookBorrowedBean);
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No borrowed books");
+            alert.setHeaderText("No borrowerd books");
+            alert.setContentText("This borrower doesnt borrowed any book.");
+            alert.showAndWait();
         }
 
     }
@@ -348,16 +341,6 @@ public class ReturnBookController implements Initializable {
         overDuedaysField.setText(dateDifference + " day(s)");
     }
 
-    private void bindAutoCompleteBorrowerName(List<String> nameCollection) {
-        AutoCompletionBinding<String> acb = TextFields.bindAutoCompletion(borrowerNameField, nameCollection);
-        // Attach after auto complete . this put information of borrower to borrowerId , borrowerName , borrowerContactInformation
-        acb.setOnAutoCompleted(new EventHandler<AutoCompletionBinding.AutoCompletionEvent<String>>() {
-            @Override
-            public void handle(AutoCompletionBinding.AutoCompletionEvent<String> event) {
-                setSelectedBorrower(event.getCompletion());
-            }
-        });
-    }
 
     /**
      * Create an overdue record for this book borrower record.
