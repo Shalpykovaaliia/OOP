@@ -289,7 +289,7 @@
                   </VBox>
                   <VBox layoutX="277.0" layoutY="20.0" prefHeight="330.0" prefWidth="247.0" style="-fx-background-color: white; -fx-padding: 20px; -fx-border-radius: 10px;">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Overdued Books" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Overdue Books" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
