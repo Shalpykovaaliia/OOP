@@ -349,7 +349,7 @@ public class DashboardController implements Initializable {
             List<String> filteredData = borrowedBooksListView.getItems().stream()
                     .filter(currentItem -> currentItem.toLowerCase().contains(filterString.toLowerCase()))
                     .collect(Collectors.toList());
-                    
+
             borrowedBooksListView.getItems().clear();
             borrowedBooksListView.getItems().addAll(filteredData);
         }
@@ -363,9 +363,9 @@ public class DashboardController implements Initializable {
         if (filterString.isEmpty()) {
             activeBorrowersListView.getItems().clear();
             activeBorrowersListView.getItems().addAll(new ArrayList<>(activeBorrowersName));
-        }else{
-            List<String> filteredData  =  activeBorrowersListView.getItems().stream()
-                    .filter( currentItem -> currentItem.toLowerCase().contains(filterString.toLowerCase()))
+        } else {
+            List<String> filteredData = activeBorrowersListView.getItems().stream()
+                    .filter(currentItem -> currentItem.toLowerCase().contains(filterString.toLowerCase()))
                     .collect(Collectors.toList());
             activeBorrowersListView.getItems().clear();
             activeBorrowersListView.getItems().addAll(filteredData);
@@ -376,16 +376,16 @@ public class DashboardController implements Initializable {
     void overdueBooksFilterResult(ActionEvent event) {
         //@TODO
         String filterString = this.overdueBooksSearchField.getText();
-        if(filterString.isEmpty()){
+        if (filterString.isEmpty()) {
             this.overdueBooksListView.getItems().clear();
             this.overdueBooksListView.getItems().addAll(overDuedBooksList);
-        }else{
-            List<String> filteredData =   overdueBooksListView.getItems().stream()
-                    .filter( currentItem -> currentItem.toLowerCase().contains(filterString.toLowerCase()))
+        } else {
+            List<String> filteredData = overdueBooksListView.getItems().stream()
+                    .filter(currentItem -> currentItem.toLowerCase().contains(filterString.toLowerCase()))
                     .collect(Collectors.toList());
             overdueBooksListView.getItems().clear();
             overdueBooksListView.getItems().addAll(filteredData);
-            
+
         }
     }
 
@@ -453,6 +453,11 @@ public class DashboardController implements Initializable {
         this.loadDashboardRecords();
         // load over dued books
         this.loadOverDued();
+    }
+
+    @FXML
+    void aboutUsButton(ActionEvent event) {
+        LibraryManagementSystem.showView("about.index");
     }
 
 }
