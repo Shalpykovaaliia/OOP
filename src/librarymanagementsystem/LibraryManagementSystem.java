@@ -16,6 +16,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -51,6 +52,8 @@ public class LibraryManagementSystem extends Application {
     public void start(Stage primaryStage) {
         APP_ROOT_PANE = primaryStage;
         APP_ROOT_PANE.initStyle(StageStyle.UNDECORATED);
+        APP_ROOT_PANE.getIcons().add(new Image(LibraryManagementSystem.class.getResourceAsStream("library.png")));
+        APP_ROOT_PANE.setTitle("J.A.R.S Library Management System");
         LibraryManagementSystem.ControllerCollection = new HashMap<>();
         AnchorPane root = new AnchorPane();
         Scene defaultScene = new Scene(root);
@@ -136,6 +139,7 @@ public class LibraryManagementSystem extends Application {
         viewLocation.put("book.penalty", "views/books/penalty_book.fxml");
         viewLocation.put("settings.manage", "views/settings/index.fxml");
         viewLocation.put("scanner.manage", "views/scanner/index.fxml");
+        viewLocation.put("about.index", "views/about/index.fxml");
 
         for (Map.Entry<String, String> currentViewLocation : viewLocation.entrySet()) {
             String key = currentViewLocation.getKey();
