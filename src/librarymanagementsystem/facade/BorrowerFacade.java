@@ -151,4 +151,28 @@ public class BorrowerFacade implements Serializable {
         }
     }
 
+    public void deleteByBorrowerBarcode(Integer borrowerBarcode) throws NonexistentEntityException {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            Borrower borrower;
+            // get the borrower by barcode
+            TypedQuery<Borrower> query = em.createNamedQuery("Borrower.findByBarcode", Borrower.class);
+            query.setParameter("borrowerBarcode", borrowerBarcode);
+            borrower = query.getSingleResult();
+            if(borrower == null){
+                throw new NonexistentEntityException("Can't find borrower with barcode "+borrowerBarcode.toString());
+            }
+            borrower = em.getReference(Borrower.class, borrower.getBorrowerId());
+            borrower.getBorrowerId();
+            em.remove(borrower);
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
 }

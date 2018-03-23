@@ -288,23 +288,23 @@ public class ManageBorrowerController implements Initializable {
                     // get selected data
                     BorrowerBean selectedBorrower = borrowerTableGrid.getSelectionModel().getSelectedItem();
                     try {
-                        borrowerFacade.destroy(selectedBorrower.getBorrowerId());
+                        borrowerFacade.deleteByBorrowerBarcode(selectedBorrower.getBorrowerId());
                         Alert deleteMessage = new Alert(Alert.AlertType.INFORMATION);
                         deleteMessage.setTitle("Deleted");
-                        deleteMessage.setContentText("Record is now deleted");
+                        deleteMessage.setContentText("Record deleted");
                         deleteMessage.showAndWait();
                         loadListOfBorrowers();
                         // issue a delete
                     } catch (NonexistentEntityException ex) {
                         Alert deleteMessage = new Alert(Alert.AlertType.ERROR);
-                        deleteMessage.setTitle("Deleted");
-                        deleteMessage.setContentText("Record is now deleted");
+                        deleteMessage.setTitle("Not found");
+                        deleteMessage.setContentText("Can't find that record");
                         deleteMessage.showAndWait();
                         Logger.getLogger(ManageUserController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (Exception ex) {
                         Alert deleteMessage = new Alert(Alert.AlertType.ERROR);
-                        deleteMessage.setTitle("Deleted");
-                        deleteMessage.setContentText("Record is now deleted");
+                        deleteMessage.setTitle("Error");
+                        deleteMessage.setContentText(ex.getMessage());
                         deleteMessage.showAndWait();
                         Logger.getLogger(ManageUserController.class.getName()).log(Level.SEVERE, null, ex);
                     }
