@@ -3,7 +3,6 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -64,7 +63,11 @@
                   <Text layoutX="61.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Russel Abequibel" />
                   <AnchorPane layoutX="204.0" layoutY="10.0" prefHeight="180.0" prefWidth="515.0" style="-fx-background-color: white;">
                      <children>
-                        <TextArea editable="false" layoutX="79.0" layoutY="-10.0" prefHeight="190.0" prefWidth="515.0" text="J.A.R.S Library Management System is Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum." wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Text layoutX="24.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="J.A.R.S Library Management System is capable of storing data, updating, searching of books, and saving of borrower’s information." wrappingWidth="476.13671875">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
                      </children>
                   </AnchorPane>
                </children>
