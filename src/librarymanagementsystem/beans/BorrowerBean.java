@@ -49,7 +49,7 @@ public class BorrowerBean {
         this.borrower_address = new SimpleStringProperty(borrower_address);
     }
 
-    public Integer getBorrowerId() {
+    public Integer getBorrowerBarcodeId() {
         return this.borrower_id.get();
     }
 
