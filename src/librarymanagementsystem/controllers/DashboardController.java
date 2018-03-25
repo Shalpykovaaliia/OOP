@@ -40,6 +40,7 @@ import javax.persistence.TypedQuery;
 import librarymanagementsystem.LibraryManagementSystem;
 import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.BorrowerJpaController;
+import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.BookBorrower;
 import librarymanagementsystem.models.Books;
 import librarymanagementsystem.models.Borrower;
@@ -53,7 +54,7 @@ import org.eclipse.persistence.config.QueryHints;
  *
  * @author danml
  */
-public class DashboardController implements Initializable {
+public class DashboardController implements Initializable ,Refreshable{
 
     @FXML
     private Label currentUserName;
@@ -458,6 +459,11 @@ public class DashboardController implements Initializable {
     @FXML
     void aboutUsButton(ActionEvent event) {
         LibraryManagementSystem.showView("about.index");
+    }
+
+    @Override
+    public void refresh() {
+        this.updateTables();
     }
 
 }

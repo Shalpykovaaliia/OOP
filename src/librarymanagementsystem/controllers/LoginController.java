@@ -29,12 +29,13 @@ import javafx.scene.layout.AnchorPane;
 import librarymanagementsystem.LibraryManagementSystem;
 import librarymanagementsystem.components.Sha1Hash;
 import librarymanagementsystem.components.UserAuthenticator;
+import librarymanagementsystem.interfaces.Refreshable;
 
 /**
  *
  * @author danml
  */
-public class LoginController implements Initializable {
+public class LoginController implements Initializable,Refreshable {
 
     @FXML
     private JFXTextField txtUsername;
@@ -109,6 +110,11 @@ public class LoginController implements Initializable {
 
     private void completeLogin() {
 
+    }
+
+    @Override
+    public void refresh() {
+        
     }
 
 }

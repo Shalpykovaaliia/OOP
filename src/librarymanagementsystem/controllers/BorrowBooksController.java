@@ -54,6 +54,7 @@ import librarymanagementsystem.beans.BookBorrowedBean;
 import librarymanagementsystem.facade.BookBorrowerJpaController;
 import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.BorrowerJpaController;
+import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.BookBorrower;
 import librarymanagementsystem.models.Books;
 import librarymanagementsystem.models.Borrower;
@@ -64,7 +65,7 @@ import org.eclipse.persistence.jpa.JpaEntityManager;
  *
  * @author User
  */
-public class BorrowBooksController implements Initializable {
+public class BorrowBooksController implements Initializable ,Refreshable{
 
     @FXML
     private JFXTextField bookBarcodeField;
@@ -431,5 +432,9 @@ public class BorrowBooksController implements Initializable {
         em.getEntityManagerFactory().getCache().evictAll();
         Logger.getLogger(BorrowBooksController.class.getName()).log(Level.INFO, "Clear cache again");
 
+    }
+
+    @Override
+    public void refresh() {
     }
 }

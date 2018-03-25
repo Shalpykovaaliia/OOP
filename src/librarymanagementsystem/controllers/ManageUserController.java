@@ -54,6 +54,7 @@ import librarymanagementsystem.components.Sha1Hash;
 import librarymanagementsystem.facade.ProfileFacade;
 import librarymanagementsystem.facade.UserFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
+import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.Profile;
 import librarymanagementsystem.models.User;
 import librarymanagementsystem.validator.EmailAddressValidator;
@@ -67,7 +68,7 @@ import org.eclipse.persistence.config.QueryHints;
  *
  * @author User
  */
-public class ManageUserController implements Initializable {
+public class ManageUserController implements Initializable,Refreshable {
 
     private ArrayList<String> errorMessages = new ArrayList<>();
 
@@ -609,5 +610,10 @@ public class ManageUserController implements Initializable {
     void clearAllFields(ActionEvent event) {
         this.currentUser = null;
         this.clearFields();
+    }
+
+    @Override
+    public void refresh() {
+        
     }
 }
