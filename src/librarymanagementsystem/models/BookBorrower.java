@@ -48,6 +48,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "BookBorrower.hasDateReturned", query = "SELECT b FROM BookBorrower b WHERE b.borrowerId = :borrowerId and b.dateReturned is null")
     , @NamedQuery(name = "BookBorrower.findBooksBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateReturned is null and b.borrowerId = :borrowerId group by b.bookId")
     , @NamedQuery(name = "BookBorrower.findOverduedBook", query = "SELECT b FROM BookBorrower b where b.expectedReturnDate < CURRENT_DATE and b.dateReturned is null group by b.bookId")
+    , @NamedQuery(name = "BookBorrower.borrowerHasOverduedBook", query = "SELECT b FROM BookBorrower b where b.borrowerId = :borrowerId and b.expectedReturnDate < CURRENT_DATE and b.dateReturned is null group by b.bookId")
     , @NamedQuery(name = "BookBorrower.findByDateBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateBorrowed = :dateBorrowed")})
 public class BookBorrower implements Serializable {
 
