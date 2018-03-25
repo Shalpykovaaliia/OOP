@@ -50,7 +50,7 @@ public class SmsNotificationLog implements Serializable {
     @Column(name = "date_sent")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateSent;
-    @JoinColumn(name = "book_borrower_id", referencedColumnName = "id")
+    @JoinColumn(name = "book_borrower_id", referencedColumnName = "id" , nullable = false)
     @ManyToOne(optional = false)
     private BookBorrower bookBorrowerId;
     

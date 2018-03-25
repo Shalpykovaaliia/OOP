@@ -11,13 +11,14 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import librarymanagementsystem.interfaces.Refreshable;
 
 /**
  * FXML Controller class
  *
  * @author User
  */
-public class AboutController implements Initializable {
+public class AboutController implements Initializable ,Refreshable{
 
     @FXML
     private JFXButton backButton;
@@ -32,6 +33,11 @@ public class AboutController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+    }
+
+    @Override
+    public void refresh() {
 
     }
 

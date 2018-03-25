@@ -28,6 +28,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import librarymanagementsystem.components.SettingsRetriever;
 import librarymanagementsystem.facade.SettingFacade;
+import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.BookBorrower;
 import librarymanagementsystem.models.Setting;
 import librarymanagementsystem.validator.IntegerFieldValidator;
@@ -37,7 +38,7 @@ import librarymanagementsystem.validator.IntegerFieldValidator;
  *
  * @author User
  */
-public class SettingsController implements Initializable {
+public class SettingsController implements Initializable ,Refreshable{
 
     @FXML
     private JFXTextField smsApicode;
@@ -277,6 +278,11 @@ public class SettingsController implements Initializable {
             Logger.getLogger(SettingsController.class.getName()).log(Level.SEVERE, ex.getMessage());
             Logger.getLogger(SettingsController.class.getName()).log(Level.SEVERE, ex.getCause().getMessage());
         }
+    }
+
+    @Override
+    public void refresh() {
+        
     }
 
 }

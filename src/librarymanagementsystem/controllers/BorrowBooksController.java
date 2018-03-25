@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -39,14 +38,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
-import javax.swing.JTextField;
 import librarymanagementsystem.exceptions.BookNotAvailable;
 import librarymanagementsystem.exceptions.BookNotFoundException;
 import librarymanagementsystem.LibraryManagementSystem;
@@ -54,6 +51,7 @@ import librarymanagementsystem.beans.BookBorrowedBean;
 import librarymanagementsystem.facade.BookBorrowerJpaController;
 import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.BorrowerJpaController;
+import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.BookBorrower;
 import librarymanagementsystem.models.Books;
 import librarymanagementsystem.models.Borrower;
@@ -64,7 +62,7 @@ import org.eclipse.persistence.jpa.JpaEntityManager;
  *
  * @author User
  */
-public class BorrowBooksController implements Initializable {
+public class BorrowBooksController implements Initializable ,Refreshable{
 
     @FXML
     private JFXTextField bookBarcodeField;
@@ -431,5 +429,9 @@ public class BorrowBooksController implements Initializable {
         em.getEntityManagerFactory().getCache().evictAll();
         Logger.getLogger(BorrowBooksController.class.getName()).log(Level.INFO, "Clear cache again");
 
+    }
+
+    @Override
+    public void refresh() {
     }
 }

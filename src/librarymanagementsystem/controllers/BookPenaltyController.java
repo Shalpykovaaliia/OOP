@@ -15,13 +15,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 import librarymanagementsystem.beans.PenaltyRecordBean;
 import librarymanagementsystem.beans.RecentlyPenalizedBean;
+import librarymanagementsystem.interfaces.Refreshable;
 
 /**
  * FXML Controller class
  *
  * @author User
  */
-public class BookPenaltyController implements Initializable {
+public class BookPenaltyController implements Initializable,Refreshable {
 
     @FXML
     private TableView<RecentlyPenalizedBean> recentlyPenalizedBorrowers;
@@ -71,6 +72,11 @@ public class BookPenaltyController implements Initializable {
     private void initializeTables() {
 //        recentlyPenalizedBorrowers
 //        allPenaltyRecordTable
+    }
+
+    @Override
+    public void refresh() {
+
     }
 
 }

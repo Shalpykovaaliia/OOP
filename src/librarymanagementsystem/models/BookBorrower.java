@@ -48,8 +48,12 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "BookBorrower.hasDateReturned", query = "SELECT b FROM BookBorrower b WHERE b.borrowerId = :borrowerId and b.dateReturned is null")
     , @NamedQuery(name = "BookBorrower.findBooksBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateReturned is null and b.borrowerId = :borrowerId group by b.bookId")
     , @NamedQuery(name = "BookBorrower.findOverduedBook", query = "SELECT b FROM BookBorrower b where b.expectedReturnDate < CURRENT_DATE and b.dateReturned is null group by b.bookId")
+    , @NamedQuery(name = "BookBorrower.borrowerHasOverduedBook", query = "SELECT b FROM BookBorrower b where b.borrowerId = :borrowerId and b.expectedReturnDate < CURRENT_DATE and b.dateReturned is null group by b.bookId")
     , @NamedQuery(name = "BookBorrower.findByDateBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateBorrowed = :dateBorrowed")})
 public class BookBorrower implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "bookBorrowerRefId")
+    private Collection<BookOverdue> bookOverdueCollection;
 
     @JoinColumn(name = "book_id", referencedColumnName = "book_id")
     @ManyToOne(optional = false)
@@ -190,7 +194,16 @@ public class BookBorrower implements Serializable {
     }
 
     public long getComputerFee() {
-        return (long) (this.getOverDueDays()* librarymanagementsystem.LibraryManagementSystem.BOOK_PENALTY_PER_DAY);
+        return (long) (this.getOverDueDays() * librarymanagementsystem.LibraryManagementSystem.BOOK_PENALTY_PER_DAY);
+    }
+
+    @XmlTransient
+    public Collection<BookOverdue> getBookOverdueCollection() {
+        return bookOverdueCollection;
+    }
+
+    public void setBookOverdueCollection(Collection<BookOverdue> bookOverdueCollection) {
+        this.bookOverdueCollection = bookOverdueCollection;
     }
 
 }

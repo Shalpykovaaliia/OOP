@@ -43,6 +43,7 @@ import librarymanagementsystem.beans.BookBean;
 import librarymanagementsystem.constants.Scenario;
 import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
+import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.Books;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
@@ -53,7 +54,7 @@ import librarymanagementsystem.validator.UniqueBookBarcodeValidator;
  *
  * @author User
  */
-public class ManageBooksController implements Initializable {
+public class ManageBooksController implements Initializable,Refreshable {
 
     @FXML
     private JFXTextField filterTextField;
@@ -405,6 +406,11 @@ public class ManageBooksController implements Initializable {
     void clearAllFields(ActionEvent event) {
         this.currentBook = null;
         this.clearFields();
+    }
+
+    @Override
+    public void refresh() {
+        
     }
 
 }

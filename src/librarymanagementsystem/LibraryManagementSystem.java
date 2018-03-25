@@ -27,6 +27,7 @@ import librarymanagementsystem.components.OverdueSmsNotifierServiceWorker;
 import librarymanagementsystem.components.SemaphoreSMSSender;
 import librarymanagementsystem.components.SettingsRetriever;
 import librarymanagementsystem.facade.SmsNotificationLogFacade;
+import librarymanagementsystem.interfaces.Refreshable;
 
 import librarymanagementsystem.models.User;
 
@@ -121,6 +122,11 @@ public class LibraryManagementSystem extends Application {
             scene.setRoot(recentView);
             APP_ROOT_PANE.setScene(scene);
             LibraryManagementSystem.APP_ROOT_PANE.show();
+            // get the controller of the scene from the map collection
+            
+            Refreshable refreshableController = (Refreshable)LibraryManagementSystem.ControllerCollection.get(recentView);
+            refreshableController.refresh();
+            
         }
         return recentView;
     }

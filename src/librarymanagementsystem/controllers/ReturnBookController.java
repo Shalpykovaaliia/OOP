@@ -42,6 +42,7 @@ import librarymanagementsystem.facade.BookBorrowerJpaController;
 import librarymanagementsystem.facade.BookOverdueJpaController;
 import librarymanagementsystem.facade.BooksFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
+import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.BookBorrower;
 import librarymanagementsystem.models.BookOverdue;
 import librarymanagementsystem.models.Books;
@@ -56,7 +57,7 @@ import org.eclipse.persistence.config.QueryHints;
  *
  * @author User
  */
-public class ReturnBookController implements Initializable {
+public class ReturnBookController implements Initializable ,Refreshable{
 
     @FXML
     private TableView<BookBorrowedBean> booksBorrowedTable;
@@ -376,6 +377,11 @@ public class ReturnBookController implements Initializable {
             Logger.getLogger(ReturnBookController.class.getName()).log(Level.INFO, "Cant set the availability of book. Book #" + bookToUpdate.toString());
         }
         // set availability.
+    }
+
+    @Override
+    public void refresh() {
+        
     }
 
 }
