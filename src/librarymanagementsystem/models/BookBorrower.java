@@ -51,6 +51,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "BookBorrower.findByDateBorrowed", query = "SELECT b FROM BookBorrower b WHERE b.dateBorrowed = :dateBorrowed")})
 public class BookBorrower implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "bookBorrowerRefId")
+    private Collection<BookOverdue> bookOverdueCollection;
+
     @JoinColumn(name = "book_id", referencedColumnName = "book_id")
     @ManyToOne(optional = false)
     private Books bookId;
@@ -190,7 +193,16 @@ public class BookBorrower implements Serializable {
     }
 
     public long getComputerFee() {
-        return (long) (this.getOverDueDays()* librarymanagementsystem.LibraryManagementSystem.BOOK_PENALTY_PER_DAY);
+        return (long) (this.getOverDueDays() * librarymanagementsystem.LibraryManagementSystem.BOOK_PENALTY_PER_DAY);
+    }
+
+    @XmlTransient
+    public Collection<BookOverdue> getBookOverdueCollection() {
+        return bookOverdueCollection;
+    }
+
+    public void setBookOverdueCollection(Collection<BookOverdue> bookOverdueCollection) {
+        this.bookOverdueCollection = bookOverdueCollection;
     }
 
 }
