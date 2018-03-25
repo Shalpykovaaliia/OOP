@@ -13,6 +13,8 @@ import javax.persistence.criteria.Root;
 import librarymanagementsystem.models.Category;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
@@ -176,5 +178,15 @@ public class BooksFacade implements Serializable {
             em.close();
         }
     }
-    
+
+    void updateStatus(Books currentBook, String AVAILABLE_STATUS) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        Query query = em.createQuery("update tbl_books set availability = 'Available' where id = :bookId");
+        query.setParameter("bookId", currentBook.getBookId());
+        int result = query.executeUpdate();
+        Logger.getLogger(BooksFacade.class.getName()).log(Level.INFO, "Number of affected record "+result);
+        em.getTransaction().commit();
+    }
+
 }
