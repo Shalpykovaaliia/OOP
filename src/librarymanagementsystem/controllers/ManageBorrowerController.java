@@ -51,6 +51,7 @@ import librarymanagementsystem.beans.BorrowerBean;
 import librarymanagementsystem.constants.Scenario;
 import librarymanagementsystem.facade.BorrowerFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
+import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.Borrower;
 import librarymanagementsystem.validator.UniqueBookBarcodeValidator;
 import librarymanagementsystem.validator.UniqueBorrowerBarcodeValidator;
@@ -62,7 +63,7 @@ import org.eclipse.persistence.config.QueryHints;
  *
  * @author User
  */
-public class ManageBorrowerController implements Initializable {
+public class ManageBorrowerController implements Initializable,Refreshable {
 
     @FXML
     private TableView<BorrowerBean> borrowerTableGrid;
@@ -282,13 +283,25 @@ public class ManageBorrowerController implements Initializable {
                 Alert confirmDeletion = new Alert(Alert.AlertType.CONFIRMATION);
                 confirmDeletion.setTitle("Delete record");
                 confirmDeletion.setContentText("Are you sure you want to delete this item?");
-
                 Optional<ButtonType> answer = confirmDeletion.showAndWait();
                 if (answer.get() == ButtonType.OK) {
                     // get selected data
                     BorrowerBean selectedBorrower = borrowerTableGrid.getSelectionModel().getSelectedItem();
                     try {
-                        borrowerFacade.deleteByBorrowerBarcode(selectedBorrower.getBorrowerId());
+                        Borrower borrowerModel = borrowerFacade.getRecordByBarcodeId(selectedBorrower.getBorrowerBarcodeId());
+                        if (borrowerFacade.hasOverDuedBooks(borrowerModel)) {
+                            // This record has overdued books
+                            Alert confirmDeleteOnBorrowerWithOverdue = new Alert(Alert.AlertType.CONFIRMATION);
+                            confirmDeleteOnBorrowerWithOverdue.setTitle("Delete record");
+                            confirmDeleteOnBorrowerWithOverdue.setContentText("Are you sure you want to delete this item?");
+                            Optional<ButtonType> answerConfirmation = confirmDeleteOnBorrowerWithOverdue.showAndWait();
+                            if (answerConfirmation.get() == ButtonType.OK) {
+                                borrowerFacade.deleteChildren(borrowerModel);
+                                borrowerFacade.destroy(borrowerModel.getBorrowerId());
+                            }
+                        }else{
+                            borrowerFacade.deleteByBorrowerBarcode(selectedBorrower.getBorrowerBarcodeId());
+                        }
                         Alert deleteMessage = new Alert(Alert.AlertType.INFORMATION);
                         deleteMessage.setTitle("Deleted");
                         deleteMessage.setContentText("Record deleted");
@@ -320,7 +333,7 @@ public class ManageBorrowerController implements Initializable {
                 BorrowerBean selectedBorrower = borrowerTableGrid.getSelectionModel().getSelectedItem();
                 if (selectedBorrower != null) {
                     // retrieve information
-                    Borrower foundBorrower = borrowerFacade.findBorrowerByBarcode(selectedBorrower.getBorrowerId());
+                    Borrower foundBorrower = borrowerFacade.findBorrowerByBarcode(selectedBorrower.getBorrowerBarcodeId());
                     currentSelectedBorrower = foundBorrower;
                     // load the information to the text box 
                     DecimalFormat df = new DecimalFormat("#");
@@ -514,5 +527,10 @@ public class ManageBorrowerController implements Initializable {
     void clearAllFields(ActionEvent event) {
         this.currentSelectedBorrower = null;
         this.clearFields();
+    }
+
+    @Override
+    public void refresh() {
+        
     }
 }
