@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="LibraryManagementSystem.jar" size="214251" download="eager" />
+    <jar href="LibraryManagementSystem.jar" size="214737" download="eager" />
     <jar href="lib\commons-cli-1.2.jar" size="41123" download="eager" />
     <jar href="lib\commons-codec-1.10.jar" size="284184" download="eager" />
     <jar href="lib\commons-codec-1.9.jar" size="263965" download="eager" />
