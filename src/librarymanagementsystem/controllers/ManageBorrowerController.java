@@ -63,7 +63,7 @@ import org.eclipse.persistence.config.QueryHints;
  *
  * @author User
  */
-public class ManageBorrowerController implements Initializable,Refreshable {
+public class ManageBorrowerController implements Initializable, Refreshable {
 
     @FXML
     private TableView<BorrowerBean> borrowerTableGrid;
@@ -292,20 +292,24 @@ public class ManageBorrowerController implements Initializable,Refreshable {
                         if (borrowerFacade.hasOverDuedBooks(borrowerModel)) {
                             // This record has overdued books
                             Alert confirmDeleteOnBorrowerWithOverdue = new Alert(Alert.AlertType.CONFIRMATION);
-                            confirmDeleteOnBorrowerWithOverdue.setTitle("Delete record");
-                            confirmDeleteOnBorrowerWithOverdue.setContentText("Are you sure you want to delete this item?");
+                            confirmDeleteOnBorrowerWithOverdue.setTitle("Borrower borrowed book(s)");
+                            confirmDeleteOnBorrowerWithOverdue.setContentText("This borrower borrowed book/s. Are you sure you want to delete this record?");
                             Optional<ButtonType> answerConfirmation = confirmDeleteOnBorrowerWithOverdue.showAndWait();
                             if (answerConfirmation.get() == ButtonType.OK) {
                                 borrowerFacade.deleteChildren(borrowerModel);
                                 borrowerFacade.destroy(borrowerModel.getBorrowerId());
+                                Alert deleteMessage = new Alert(Alert.AlertType.INFORMATION);
+                                deleteMessage.setTitle("Deleted");
+                                deleteMessage.setContentText("Record deleted");
+                                deleteMessage.showAndWait();
                             }
-                        }else{
+                        } else {
                             borrowerFacade.deleteByBorrowerBarcode(selectedBorrower.getBorrowerBarcodeId());
+                            Alert deleteMessage = new Alert(Alert.AlertType.INFORMATION);
+                            deleteMessage.setTitle("Deleted");
+                            deleteMessage.setContentText("Record deleted");
+                            deleteMessage.showAndWait();
                         }
-                        Alert deleteMessage = new Alert(Alert.AlertType.INFORMATION);
-                        deleteMessage.setTitle("Deleted");
-                        deleteMessage.setContentText("Record deleted");
-                        deleteMessage.showAndWait();
                         loadListOfBorrowers();
                         // issue a delete
                     } catch (NonexistentEntityException ex) {
@@ -531,6 +535,6 @@ public class ManageBorrowerController implements Initializable,Refreshable {
 
     @Override
     public void refresh() {
-        
+
     }
 }
