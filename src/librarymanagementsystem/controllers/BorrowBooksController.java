@@ -74,9 +74,6 @@ public class BorrowBooksController implements Initializable ,Refreshable{
     private TableColumn<BookBorrowedBean, String> titleColumn;
 
     @FXML
-    private TableColumn<BookBorrowedBean, Integer> idColumn;
-
-    @FXML
     private TableColumn<BookBorrowedBean, String> editionColumn;
 
     @FXML
@@ -310,7 +307,6 @@ public class BorrowBooksController implements Initializable ,Refreshable{
     private void initializeBookToBeBorrowedTable() {
         this.bookBorrowedTable.setContextMenu(this.tableContextMenu);
         try {
-            idColumn.setCellValueFactory(new PropertyValueFactory<>("bookId"));
             titleColumn.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
             editionColumn.setCellValueFactory(new PropertyValueFactory<>("bookEdition"));
         } catch (NullPointerException e) {
