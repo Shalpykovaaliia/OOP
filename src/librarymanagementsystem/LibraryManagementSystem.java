@@ -44,7 +44,6 @@ public class LibraryManagementSystem extends Application {
     public static ArrayList<AnchorPane> RECENT_PANE_HISTORY = null;
     public static FXMLLoader FXMLViewLoader;
     public static HashMap<AnchorPane, Initializable> ControllerCollection;
-    public static float PENALTY_PER_DAY = 2;// two pesos
     public static String API_CODE = "";
     public static String SMS_NOTIFICATION_STATUS = "";
     public static String SMS_SENDER_NAME = "";
@@ -61,7 +60,8 @@ public class LibraryManagementSystem extends Application {
         APP_ROOT_PANE.setScene(defaultScene);
         RECENT_PANE_HISTORY = new ArrayList<>();
         //load application settings 
-        this.loadApplicationSettings();
+
+        LibraryManagementSystem.LOAD_APPLICATION_SETTINGS();
         // load the views
         this.loadViews();
         //get and show the login pane
@@ -164,7 +164,7 @@ public class LibraryManagementSystem extends Application {
         }
     }
 
-    private void loadApplicationSettings() {
+    public static void LOAD_APPLICATION_SETTINGS() {
         // retrieve from database the apicode
         SettingsRetriever settingsRetriever = new SettingsRetriever();
         LibraryManagementSystem.API_CODE = settingsRetriever.getApiCode();
