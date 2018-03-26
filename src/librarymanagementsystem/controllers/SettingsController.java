@@ -23,6 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.AnchorPane;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
@@ -72,6 +73,12 @@ public class SettingsController implements Initializable ,Refreshable{
 
     @FXML
     void returnBack(ActionEvent event) {
+        // update the settings label
+        librarymanagementsystem.LibraryManagementSystem.LOAD_APPLICATION_SETTINGS();
+        AnchorPane bookReturnView =  librarymanagementsystem.LibraryManagementSystem.APPLICATION_VIEW.get("book.return");
+        Refreshable bookReturnViewController =   (Refreshable) librarymanagementsystem.LibraryManagementSystem.ControllerCollection.get(bookReturnView);
+        
+        bookReturnViewController.refresh();
         librarymanagementsystem.LibraryManagementSystem.back();
     }
 
