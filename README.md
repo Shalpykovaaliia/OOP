@@ -31,14 +31,14 @@
 
 ## CHANGELOG
 ### [1.0.1](https://github.com/kevindaus/library-management-system-javafx/releases/tag/1.0.1)
-ADD = sms notification
-ADD = return book 
-ADD = overdue worker
-ADD = settings management
-ADD = view recently penalized borrower report
-ADD = view total penalty record 
-ADD = borrow book panel
-ADD = return book panel
+ADD = sms notification <br />
+ADD = return book  <br />
+ADD = overdue worker <br />
+ADD = settings management <br />
+ADD = view recently penalized borrower report <br />
+ADD = view total penalty record  <br />
+ADD = borrow book panel <br />
+ADD = return book panel <br />
 
 ### [1.0.0](https://github.com/kevindaus/library-management-system-javafx/releases/tag/1.0.0)
 ADD = manage book , borrower and user
