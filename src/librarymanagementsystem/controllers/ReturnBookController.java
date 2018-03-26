@@ -87,9 +87,6 @@ public class ReturnBookController implements Initializable ,Refreshable{
     private JFXTextField borrowerNameField;
 
     @FXML
-    private Text borrowerId;
-
-    @FXML
     private Text borrowerName;
 
     @FXML
@@ -161,7 +158,7 @@ public class ReturnBookController implements Initializable ,Refreshable{
         // Load names of borrowed in borrowerNameField
         this.setTodaysDate();
         this.initializeBooksBorrowedTable();
-
+        this.refresh();
     }
 
     @FXML
@@ -203,7 +200,6 @@ public class ReturnBookController implements Initializable ,Refreshable{
                 userNotify.setHeaderText("No borrowed books");
                 userNotify.setHeaderText("This didn't borrowed any books.");
             } else {
-                borrowerId.setText("ID # " + foundBorrower.getBorrowerId().toString());
                 StringBuilder fullNameStr = new StringBuilder();
                 fullNameStr.append(foundBorrower.getTitle())
                         .append(" ")
@@ -281,7 +277,6 @@ public class ReturnBookController implements Initializable ,Refreshable{
 
     private void clearFields() {
         // clear borrowers information
-        borrowerId.setText("ID #");
         borrowerName.setText("Name");
         borrowerContactInformation.setText("Contact #");
         borrowerNameField.setText("");
@@ -301,7 +296,7 @@ public class ReturnBookController implements Initializable ,Refreshable{
     }
 
     private void calculateTotalPenaltyFee() {
-        Float totalOverDueFee = new Float(0);
+        double totalOverDueFee = 0;
         // get the current book borrow collection
         for (Iterator<BookBorrower> iterator = currentBooksBorrowed.iterator(); iterator.hasNext();) {
             // iterate through the collection 
@@ -309,15 +304,15 @@ public class ReturnBookController implements Initializable ,Refreshable{
             totalOverDueFee += getOverDueFee(curBookBorrower);
         }
         // set the calculation label
-        totalPenalty.setText(totalOverDueFee.toString());
+        totalPenalty.setText(totalOverDueFee+"");
     }
 
-    private float getOverDueFee(BookBorrower curBookBorrower) {
+    private double getOverDueFee(BookBorrower curBookBorrower) {
         // get the day difference 
         LocalDate tempExpectedReturnDateContainer = SqlDateToLocalDate.convert(curBookBorrower.getExpectedReturnDate());
-        long dayDifference = ChronoUnit.DAYS.between(tempExpectedReturnDateContainer, LocalDate.now());
+        double dayDifference = (double)ChronoUnit.DAYS.between(tempExpectedReturnDateContainer, LocalDate.now());
         if (dayDifference > 0) {
-            return dayDifference * librarymanagementsystem.LibraryManagementSystem.PENALTY_PER_DAY;
+            return dayDifference * librarymanagementsystem.LibraryManagementSystem.BOOK_PENALTY_PER_DAY;
         } else {
             return 0;
         }
@@ -351,11 +346,11 @@ public class ReturnBookController implements Initializable ,Refreshable{
     private void payOverDueFees(BookBorrower curBookBorrowed) {
         // check if it doesnt have a record yet
         BookOverdue bookOverDue = new BookOverdue();
-        float overDueFee = getOverDueFee(curBookBorrowed);
-        bookOverDue.setComputedFee(overDueFee);
+        double overDueFee = getOverDueFee(curBookBorrowed);
+        bookOverDue.setComputedFee((float)overDueFee);
         bookOverDue.setBookBorrowerRefId(curBookBorrowed);
         bookOverDue.setBalance(0);
-        bookOverDue.setPaid(overDueFee);
+        bookOverDue.setPaid((float)overDueFee);
         bookOverDue.setNotes("Paid overdue fee from total " + totalPenalty.getText());
         if (overDueFee > 0) {
             this.bookOverDueFacade.create(bookOverDue);
@@ -381,7 +376,9 @@ public class ReturnBookController implements Initializable ,Refreshable{
 
     @Override
     public void refresh() {
-        
+        Logger.getLogger(ReturnBookController.class.getName()).log(Level.INFO, "ReturnBookController refresh");
+        double penaltyPerDaySettingVal = LibraryManagementSystem.BOOK_PENALTY_PER_DAY;
+        this.penaltyPerDay.setText(""+penaltyPerDaySettingVal+" pesos");
     }
 
 }
