@@ -77,7 +77,6 @@
                                           </Text>
                                           <TableView fx:id="bookBorrowedTable" prefHeight="384.0" prefWidth="325.0">
                                             <columns>
-                                                <TableColumn fx:id="idColumn" prefWidth="59.0" text="Id" />
                                               <TableColumn fx:id="titleColumn" prefWidth="157.0" text="Title" />
                                               <TableColumn fx:id="editionColumn" prefWidth="75.0" text="Edition" />
                                             </columns>
