@@ -288,3 +288,9 @@ Nice things to have
 @TODO - detect database configuration. allow user to set database configuration
 
 
+
+@TODO - bug - when creating student ID 
+student id should be unique
+
+@TODO - bug on book , when 
+book id should be unique

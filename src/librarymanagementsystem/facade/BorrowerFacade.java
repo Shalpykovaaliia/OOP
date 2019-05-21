@@ -134,7 +134,8 @@ public class BorrowerFacade implements Serializable {
         }
     }
 
-    public Borrower findBorrowerByBarcode(Integer borrowerBarcode) {
+    public Borrower findBorrowerByBarcode(Double borrowerBarcode) {
+        System.out.println("looking for borrower with ID : "+borrowerBarcode.toString());
         EntityManager em = getEntityManager();
         try {
             TypedQuery<Borrower> query = em.createNamedQuery("Borrower.findByBarcode", Borrower.class);
@@ -160,7 +161,7 @@ public class BorrowerFacade implements Serializable {
         }
     }
 
-    public void deleteByBorrowerBarcode(Integer borrowerBarcode) throws NonexistentEntityException {
+    public void deleteByBorrowerBarcode(Double borrowerBarcode) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -185,7 +186,7 @@ public class BorrowerFacade implements Serializable {
         }
     }
 
-    public Borrower getRecordByBarcodeId(Integer borrowerBarcode) throws NonexistentEntityException {
+    public Borrower getRecordByBarcodeId(Double borrowerBarcode) throws NonexistentEntityException {
         EntityManager em = null;
         Borrower borrower = null;
         try {

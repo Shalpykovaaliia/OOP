@@ -14,7 +14,7 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class BookBean {
 
-    private SimpleIntegerProperty bookId;
+    private SimpleStringProperty bookId;
     private SimpleStringProperty isbn;
     private SimpleStringProperty availability;
     private SimpleStringProperty title;
@@ -23,7 +23,7 @@ public class BookBean {
     private SimpleStringProperty edition;
     
     public BookBean() {
-        this.bookId = new SimpleIntegerProperty();
+        this.bookId = new SimpleStringProperty();
         this.isbn = new SimpleStringProperty();
         this.availability = new SimpleStringProperty();
         this.title = new SimpleStringProperty();
@@ -33,7 +33,7 @@ public class BookBean {
     }
 
     
-    public BookBean(Integer bookId, String isbn, String availability, String title, String author, String description, String edition) {
+    public BookBean(String bookId, String isbn, String availability, String title, String author, String description, String edition) {
         this.bookId.set(bookId);
         this.isbn.set(isbn);
         this.availability.set(availability);
@@ -42,7 +42,7 @@ public class BookBean {
         this.description.set(description);
         this.edition.set(edition);
     }
-    public SimpleIntegerProperty id() {
+    public SimpleStringProperty id() {
         return this.bookId;
     }
 
@@ -70,11 +70,11 @@ public class BookBean {
         return this.edition;
     }
 
-    public int getBookId() {
+    public String getBookId() {
         return bookId.get();
     }
 
-    public void setBookId(int bookId) {
+    public void setBookId(String bookId) {
         this.bookId.set(bookId);
     }
 

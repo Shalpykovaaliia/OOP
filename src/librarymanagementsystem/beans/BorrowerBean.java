@@ -5,7 +5,7 @@
  */
 package librarymanagementsystem.beans;
 
-import javafx.beans.property.SimpleIntegerProperty;
+
 import javafx.beans.property.SimpleStringProperty;
 
 /**
@@ -13,13 +13,12 @@ import javafx.beans.property.SimpleStringProperty;
  * @author User
  */
 public class BorrowerBean {
-
-    private SimpleIntegerProperty borrower_id;
+    private SimpleStringProperty borrower_id;
     private SimpleStringProperty borrower_name;
     private SimpleStringProperty borrower_mobile;
     private SimpleStringProperty borrower_address;
 
-    public SimpleIntegerProperty borrower_idProperty() {
+    public SimpleStringProperty borrower_idProperty() {
         return this.borrower_id;
     }
 
@@ -36,24 +35,24 @@ public class BorrowerBean {
     }
 
     public BorrowerBean() {
-        this.borrower_id = new SimpleIntegerProperty();
+        this.borrower_id = new SimpleStringProperty();
         this.borrower_name = new SimpleStringProperty();
         this.borrower_mobile = new SimpleStringProperty();
         this.borrower_address = new SimpleStringProperty();
     }
 
-    public BorrowerBean(Integer borrower_id, String borrower_name, String borrower_mobile, String borrower_address) {
-        this.borrower_id = new SimpleIntegerProperty(borrower_id);
+    public BorrowerBean(String borrower_id, String borrower_name, String borrower_mobile, String borrower_address) {
+        this.borrower_id = new SimpleStringProperty(borrower_id);
         this.borrower_name = new SimpleStringProperty(borrower_name);
         this.borrower_mobile = new SimpleStringProperty(borrower_mobile);
         this.borrower_address = new SimpleStringProperty(borrower_address);
     }
 
-    public Integer getBorrowerBarcodeId() {
+    public String getBorrowerBarcodeId() {
         return this.borrower_id.get();
     }
 
-    public void setBorrowerId(Integer borrower_id) {
+    public void setBorrowerId(String borrower_id) {
         this.borrower_id.set(borrower_id);
     }
 

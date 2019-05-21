@@ -14,6 +14,7 @@ import com.jfoenix.validation.base.ValidatorBase;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -49,12 +50,13 @@ import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 import librarymanagementsystem.validator.UniqueBookBarcodeValidator;
 
+
 /**
  * FXML Controller class
  *
  * @author User
  */
-public class ManageBooksController implements Initializable,Refreshable {
+public class ManageBooksController implements Initializable, Refreshable {
 
     @FXML
     private JFXTextField filterTextField;
@@ -120,6 +122,7 @@ public class ManageBooksController implements Initializable,Refreshable {
     private BooksFacade bookFacade;
     private Books currentBook;
     private static Scenario CURRENT_SCENARIO = Scenario.NEW_RECORD;
+    
 
     @FXML
     void submitBookInformation(ActionEvent event) {
@@ -199,6 +202,8 @@ public class ManageBooksController implements Initializable,Refreshable {
         this.bookAuthor.getValidators().add(bookAuthorValidator);
         this.bookBarcode.getValidators().add(bookBarcodeValidator);
         this.bookBarcode.getValidators().add(bookBarcodeUniqueValidator);
+        
+
     }
 
     private void initializeValidators() {
@@ -216,6 +221,7 @@ public class ManageBooksController implements Initializable,Refreshable {
         bookBarcodeUniqueValidator = new UniqueBookBarcodeValidator();
         bookBarcodeUniqueValidator.setMessage("This barcode number is already used.");
         bookBarcodeUniqueValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
+
     }
 
     private void populateAvailabilityField() {
@@ -290,7 +296,8 @@ public class ManageBooksController implements Initializable,Refreshable {
                 BookBean selectedBook = bookTable.getSelectionModel().getSelectedItem();
                 if (selectedBook != null) {
                     // retrieve information
-                    Books foundBook = bookFacade.findBooks(selectedBook.getBookId());
+                    Integer bookIdContainer = new Integer(Integer.parseInt(selectedBook.getBookId()));
+                    Books foundBook = bookFacade.findBooks(bookIdContainer);
                     currentBook = foundBook;
                     // load the information to the text box 
                     bookIsbn.setText(foundBook.getIsbn());
@@ -321,7 +328,7 @@ public class ManageBooksController implements Initializable,Refreshable {
         for (Iterator<Books> iterator = books.iterator(); iterator.hasNext();) {
             Books currentBookIter = iterator.next();
             BookBean bookBean = new BookBean();
-            bookBean.setBookId(currentBookIter.getBookId());
+            bookBean.setBookId( currentBookIter.getBookId().toString() );
             bookBean.setIsbn(currentBookIter.getIsbn());
             bookBean.setAvailability(currentBookIter.getAvailability());
             bookBean.setTitle(currentBookIter.getTitle());
@@ -348,6 +355,7 @@ public class ManageBooksController implements Initializable,Refreshable {
 
     private void updateRecord() {
         this.currentBook.setIsbn(bookIsbn.getText());
+        this.currentBook.setBarcodeIdentification(bookBarcode.getText());
         this.currentBook.setAvailability(bookAvailability.getValue());
         this.currentBook.setTitle(bookTitle.getText());
         this.currentBook.setAuthor(bookAuthor.getText());
@@ -404,13 +412,17 @@ public class ManageBooksController implements Initializable,Refreshable {
 
     @FXML
     void clearAllFields(ActionEvent event) {
+        for (IFXTextInputControl formField : formFields) {
+            formField.resetValidation();
+            Logger.getLogger(ManageUserController.class.getName()).log(Level.SEVERE, "Clearing validation error : " + formField.getClass());
+        }
         this.currentBook = null;
         this.clearFields();
     }
 
     @Override
     public void refresh() {
-        
+
     }
 
 }

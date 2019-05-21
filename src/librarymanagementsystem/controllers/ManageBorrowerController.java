@@ -53,6 +53,7 @@ import librarymanagementsystem.facade.BorrowerFacade;
 import librarymanagementsystem.facade.exceptions.NonexistentEntityException;
 import librarymanagementsystem.interfaces.Refreshable;
 import librarymanagementsystem.models.Borrower;
+import librarymanagementsystem.validator.InvalidBarcodeIdValidator;
 import librarymanagementsystem.validator.UniqueBookBarcodeValidator;
 import librarymanagementsystem.validator.UniqueBorrowerBarcodeValidator;
 import org.eclipse.persistence.config.HintValues;
@@ -141,6 +142,7 @@ public class ManageBorrowerController implements Initializable, Refreshable {
     private RequiredFieldValidator borrowerBarcodeValidator;
     private static Scenario CURRENT_SCENARIO = Scenario.NEW_RECORD;
     private UniqueBorrowerBarcodeValidator uniqueBorrowerBarcodeValidator;
+    private InvalidBarcodeIdValidator invalidBarcodeIdValidator;
 
     @FXML
     void filterBorrowerRecord(ActionEvent event) {
@@ -237,11 +239,16 @@ public class ManageBorrowerController implements Initializable, Refreshable {
         this.lastNameRequiredValidator.setMessage("Lastname is required");
         this.lastNameRequiredValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
 
+        this.invalidBarcodeIdValidator = new InvalidBarcodeIdValidator();
+        this.invalidBarcodeIdValidator.setMessage("This Barcode has invalid format. It should be from 1 - 2147483647(e.g 2234654788)");
+        this.invalidBarcodeIdValidator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.TIMES));
+
     }
 
     private void registerValidator() {
         this.borrowerBarcode.getValidators().add(this.borrowerBarcodeValidator);
         this.borrowerBarcode.getValidators().add(this.uniqueBorrowerBarcodeValidator);
+        this.borrowerBarcode.getValidators().add(this.invalidBarcodeIdValidator);
         this.borrowerTitle.getValidators().add(this.borrowerTitleValidator);
         this.borrowerFirstname.getValidators().add(this.firstNameRequiredValidator);
         this.borrowerLastname.getValidators().add(this.lastNameRequiredValidator);
@@ -288,7 +295,7 @@ public class ManageBorrowerController implements Initializable, Refreshable {
                     // get selected data
                     BorrowerBean selectedBorrower = borrowerTableGrid.getSelectionModel().getSelectedItem();
                     try {
-                        Borrower borrowerModel = borrowerFacade.getRecordByBarcodeId(selectedBorrower.getBorrowerBarcodeId());
+                        Borrower borrowerModel = borrowerFacade.getRecordByBarcodeId(new Double(selectedBorrower.getBorrowerBarcodeId()));
                         if (borrowerFacade.hasOverDuedBooks(borrowerModel)) {
                             // This record has overdued books
                             Alert confirmDeleteOnBorrowerWithOverdue = new Alert(Alert.AlertType.CONFIRMATION);
@@ -304,7 +311,7 @@ public class ManageBorrowerController implements Initializable, Refreshable {
                                 deleteMessage.showAndWait();
                             }
                         } else {
-                            borrowerFacade.deleteByBorrowerBarcode(selectedBorrower.getBorrowerBarcodeId());
+                            borrowerFacade.deleteByBorrowerBarcode(new Double(selectedBorrower.getBorrowerBarcodeId()));
                             Alert deleteMessage = new Alert(Alert.AlertType.INFORMATION);
                             deleteMessage.setTitle("Deleted");
                             deleteMessage.setContentText("Record deleted");
@@ -337,7 +344,7 @@ public class ManageBorrowerController implements Initializable, Refreshable {
                 BorrowerBean selectedBorrower = borrowerTableGrid.getSelectionModel().getSelectedItem();
                 if (selectedBorrower != null) {
                     // retrieve information
-                    Borrower foundBorrower = borrowerFacade.findBorrowerByBarcode(selectedBorrower.getBorrowerBarcodeId());
+                    Borrower foundBorrower = borrowerFacade.findBorrowerByBarcode(new Double(selectedBorrower.getBorrowerBarcodeId()));
                     currentSelectedBorrower = foundBorrower;
                     // load the information to the text box 
                     DecimalFormat df = new DecimalFormat("#");
@@ -385,7 +392,9 @@ public class ManageBorrowerController implements Initializable, Refreshable {
             Borrower currentBorrowerIter = iterator.next();
             BorrowerBean tempBorrower = new BorrowerBean();
             //id
-            tempBorrower.setBorrowerId((int) currentBorrowerIter.getBorrowerBarcode());
+            DecimalFormat dFormat = new DecimalFormat("#################");
+            String borrowerCodeStr = dFormat.format(currentBorrowerIter.getBorrowerBarcode());
+            tempBorrower.setBorrowerId(borrowerCodeStr);
             //name
             StringBuilder borrowerFullName = new StringBuilder();
             borrowerFullName
@@ -529,6 +538,10 @@ public class ManageBorrowerController implements Initializable, Refreshable {
 
     @FXML
     void clearAllFields(ActionEvent event) {
+        for (IFXTextInputControl formField : formFields) {
+            formField.resetValidation();
+            Logger.getLogger(ManageUserController.class.getName()).log(Level.SEVERE, "Clearing validation error : " + formField.getClass());
+        }
         this.currentSelectedBorrower = null;
         this.clearFields();
     }
